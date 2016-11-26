@@ -5,13 +5,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import rs.ac.uns.sw.xml.domain.Glava;
-import rs.ac.uns.sw.xml.domain.GlavaRepositoryXML;
+import rs.ac.uns.sw.xml.domain.wrapper.GlavaSearchResult;
+import rs.ac.uns.sw.xml.service.GlavaServiceXML;
 
 import java.net.URISyntaxException;
 
@@ -20,36 +18,45 @@ import java.net.URISyntaxException;
 public class GlavaRestController {
 
     @Autowired
-    GlavaRepositoryXML repositoryXML;
+    GlavaServiceXML service;
 
     @RequestMapping(
             value    = "/glave",
             method   = RequestMethod.POST,
             consumes = MediaType.APPLICATION_XML_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Glava> createGlava(@RequestBody Glava glava, UriComponentsBuilder builder) throws URISyntaxException {
-        System.out.println("dsa das das dsdsa ");
-
-        System.out.println(glava.getOdjeljak());
-        System.out.println(glava.getName());
-
-        Glava result = repositoryXML.save(glava);
+        Glava result = service.create(glava);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(
                 builder.path("/glave/{id}.xml")
                         .buildAndExpand(glava.getId()).toUri());
 
-        return new ResponseEntity<>(glava, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
     }
+
+    /*@RequestMapping(
+            value    = "/glave",
+            method   = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<GlavaSearchResult> getGlave() {
+        GlavaSearchResult result = service.getAll();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }*/
 
     @RequestMapping(
             value    = "/glave",
             method   = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_XML_VALUE
     )
-    public String fsd() {
-        return "{\"ime\": \"Test\"}";
+    public ResponseEntity<GlavaSearchResult> searchGlaveByOdjeljak(@RequestParam(name = "query") String query) {
+        System.out.println(query);
+        GlavaSearchResult result = service.findByOdjeljakContains(query);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
