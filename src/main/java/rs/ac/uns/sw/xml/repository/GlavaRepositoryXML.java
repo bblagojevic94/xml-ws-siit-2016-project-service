@@ -1,6 +1,10 @@
 package rs.ac.uns.sw.xml.repository;
 
+import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.XMLDocumentManager;
+import com.marklogic.client.eval.EvalResult;
+import com.marklogic.client.eval.EvalResultIterator;
+import com.marklogic.client.eval.ServerEvaluationCall;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.SearchHandle;
@@ -28,6 +32,9 @@ public class GlavaRepositoryXML {
 
     @Autowired
     QueryManager queryManager;
+
+    @Autowired
+    DatabaseClient databaseClient;
 
 
     // BASIC REPOSITORY FUNCTIONS
@@ -63,18 +70,32 @@ public class GlavaRepositoryXML {
 
 
     // ADVANCED REPOSITORY FUNCTIONS
+    // Sample XQuery evaluation on server
     public GlavaSearchResult findByOdjeljakContains(String query) {
-        StructuredQueryBuilder builder = queryManager.newStructuredQueryBuilder();
+        String xquery = "for $x in collection(\"/glave.xml\")/glava\n" +
+                "where contains($x/odjeljak, \"" + query + "\")\n" +
+                "return $x";
 
-        // The following example defines a query that searches for the QUERY value within an element range index on 'odjeljak'.
-        StructuredQueryDefinition criteria = builder.and(
-          builder.wordConstraint("odjeljak", query)
-        );
+        ServerEvaluationCall invoker = databaseClient.newServerEval();
 
-        SearchHandle result = new SearchHandle();
-        queryManager.search(criteria, result);
+        // Invoke the query
+        invoker.xquery(xquery);
 
-        return toSearchResult(result);
+        // Interpret the results
+        EvalResultIterator response = invoker.eval();
+
+        System.out.print("[INFO] Response: ");
+
+        if (response.hasNext()) {
+
+            for (EvalResult result : response) {
+                System.out.println("\n" + result.getString());
+            }
+        } else {
+            System.out.println("your query returned an empty sequence.");
+        }
+
+        return null;
     }
 
 

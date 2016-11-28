@@ -49,4 +49,5 @@ public class MarkLogicConfiguration {
     public XMLDocumentManager getXMLDocumentManager() {
         return getDatabaseClient().newXMLDocumentManager();
     }
+
 }
