@@ -14,11 +14,18 @@ import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Glava;
 import rs.ac.uns.sw.xml.domain.wrapper.GlavaSearchResult;
+import rs.ac.uns.sw.xml.util.Transformers;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +71,27 @@ public class GlavaRepositoryXML {
 
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
+
+        try {
+            JAXBContext context = JAXBContext.newInstance(GlavaSearchResult.class);
+            Marshaller marshaller = context.createMarshaller();
+
+            StringWriter sw = new StringWriter();
+            marshaller.marshal(toSearchResult(result), sw);
+            String xmlString = sw.toString();
+
+            Transformers.toHtml(xmlString, "glave");
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
 
         return toSearchResult(result);
     }
