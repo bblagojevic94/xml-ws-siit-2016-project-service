@@ -37,7 +37,7 @@ public class GlavaRestController {
         return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
     }
 
-    /*@RequestMapping(
+    @RequestMapping(
             value    = "/glave",
             method   = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
@@ -46,15 +46,14 @@ public class GlavaRestController {
         GlavaSearchResult result = service.getAll();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }*/
+    }
 
     @RequestMapping(
-            value    = "/glave",
+            value    = "/glave-xquery",
             method   = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<GlavaSearchResult> searchGlaveByOdjeljak(@RequestParam(name = "query") String query) {
-        System.out.println(query);
         GlavaSearchResult result = service.findByOdjeljakContains(query);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
