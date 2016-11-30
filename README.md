@@ -30,4 +30,40 @@ Nakon toga, kliknuti na dugme ***Configure***. Selektovati opciju **Collection L
 Kliknuti na dugme ***new REST API instances***.  
 Za polje ***Server Name*** odabrati **xmlDBServer**, a za ***Port*** podesiti **8011**. 
  
+    
+    
+### Mapiranje XML elemenata na Java klase
 
+#### elementi.xsd
+| XML element    | JAVA klasa    |
+| -------------- | ------------- |
+| dio            | Chapter       |
+| glava          | Part          |
+| odjeljak       | Section       |
+| pododjeljak    | Subsection    |
+| clan           | Article       |
+| stav           | Paragraph     |
+| tačka          | Clause        |
+| podtačka       | Subclause     |
+| alineja        | Item          |
+
+#### korisnici.xsd
+| XML element    | JAVA klasa    |
+| -------------- | ------------- |
+| adresa         | Address       |
+| TLice          | Person        |
+| TFizicko_lice  | Individual    |
+| TPravno_lice   | LegalEntity   |
+| TKorisnik      | User          |
+
+#### propis.xsd
+| XML element    | JAVA klasa    |
+| -------------- | ------------- |
+| propis         | Law           |
+
+#### amandman.xsd
+| XML element    | JAVA klasa    |
+| -------------- | ------------- |
+| amandman       | Amendment     |
+| amandmani      | Amendments    |
+| obrazlozenje   | Explanation   |
