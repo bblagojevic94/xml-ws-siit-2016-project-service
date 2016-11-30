@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.parlament.gov.rs/schema/amandman"
+    xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+    xmlns:prop="http://www.parlament.gov.rs/schema/propis"
+    xmlns:kor="http://www.parlament.gov.rs/schema/korisnici"
+    xmlns:aman="http://www.parlament.gov.rs/schema/amandman"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+
+    <xs:import namespace="http://www.parlament.gov.rs/schema/elementi" schemaLocation="elementi.xsd"/>
+    <xs:import namespace="http://www.parlament.gov.rs/schema/propis" schemaLocation="propis.xsd"/>
+    <xs:import namespace="http://www.parlament.gov.rs/schema/korisnici"
+        schemaLocation="korisnici.xsd"/>
+
+    <xs:element name="amandman">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Amendment"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="head">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="prop:propis" minOccurs="0"/>
+                            <xs:element name="rjesenje">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="brisanje"/>
+                                        <xs:enumeration value="izmjena"/>
+                                        <xs:enumeration value="dopuna"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="body">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="odredba">
+                                <xs:complexType>
+                                    <xs:choice>
+                                        <xs:element ref="elem:clan"/>
+                                        <xs:element ref="elem:stav"/>
+                                        <xs:element ref="elem:tacka"/>
+                                        <xs:element ref="elem:podtacka"/>
+                                        <xs:element ref="elem:alineja"/>
+                                    </xs:choice>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element ref="aman:obrazlozenje"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="amandmani">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Amendments"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="head">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="datum" type="xs:date"/>
+                            <xs:element name="podnosilac" type="kor:TKorisnik"/>
+                            <xs:element name="status">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="prihvacen"/>
+                                        <xs:enumeration value="odbijen"/>
+                                        <xs:enumeration value="predlozen"/>
+                                        <xs:enumeration value="povucen"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="mjesto" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="body">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="pravni_osnov">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="elem:clan"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" ref="aman:amandman"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="obrazlozenje">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Explanation"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="razlog"/>
+                <xs:element name="objasnjene_predlozenog_rjesenja"/>
+                <xs:element name="cilj"/>
+                <xs:element name="uticaj_na_budzetska_sredstva"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

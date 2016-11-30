@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.parlament.gov.rs/schema/korisnici"
+    xmlns:kor="http://www.parlament.gov.rs/schema/korisnici"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+    <xs:element name="Adresa">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Address"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ulica" type="xs:string"/>
+                <xs:element default="21000" name="postanski_broj">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:minInclusive value="11000"/>
+                            <xs:maxInclusive value="40000"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element default="Novi Sad" name="mjesto" type="xs:string"/>
+                <xs:element name="broj" type="xs:positiveInteger"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType abstract="true" name="TLice">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Person"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="kor:Adresa"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TPravno_lice">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="LegalEntity"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="kor:TLice">
+                <xs:sequence>
+                    <xs:element name="naziv"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TFizicko_lice">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Individual"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="kor:TLice">
+                <xs:sequence>
+                    <xs:element name="ime"/>
+                    <xs:element name="prezime"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TKorisnik">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="User"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="kor:TFizicko_lice">
+                <xs:sequence>
+                    <xs:element name="uloga">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="gradjanin"/>
+                                <xs:enumeration value="narodni_poslanik"/>
+                                <xs:enumeration value="predsednik_skupstine"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>
