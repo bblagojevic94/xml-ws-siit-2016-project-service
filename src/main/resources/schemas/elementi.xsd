@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.parlament.gov.rs/schema/elementi"
+    xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+    <xs:element name="dio">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Chapter"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:glava"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+            <xs:attribute name="role">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="uvodni_dio"/>
+                        <xs:enumeration value="glavni_dio"/>
+                        <xs:enumeration value="završni_dio"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="glava">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Part"/>
+            </xs:appinfo>
+        </xs:annotation>       
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="elem:odjeljak" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+            <xs:attribute name="role">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="uvodne_odredbe"/>
+                        <xs:enumeration value="završne_odredbe"/>
+                        <xs:enumeration value="opšte_odredbe"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="odjeljak">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Section"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice>
+                <xs:element maxOccurs="unbounded" ref="elem:pododjeljak"/>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:clan"/>
+            </xs:choice>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pododjeljak">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Subsection"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="elem:odjeljak"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clan">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Article"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:stav"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="stav">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Paragraph"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:tacka"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tacka">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Clause"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:podtacka"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="podtacka">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Subclause"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:alineja"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="alineja">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Item"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attributeGroup ref="elem:standard_attrs"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:attributeGroup name="standard_attrs">
+        <xs:attribute name="id" type="xs:anyURI" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
+</xs:schema>
