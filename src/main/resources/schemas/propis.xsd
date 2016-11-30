@@ -38,10 +38,10 @@
                 </xs:element>
                 <xs:element name="body">
                     <xs:complexType>
-                        <xs:sequence>
+                        <xs:choice>
                             <xs:element maxOccurs="unbounded" ref="elem:glava"/>
-                            <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:dio"/>
-                        </xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:dio"/>
+                        </xs:choice>
                     </xs:complexType>
                 </xs:element>
             </xs:choice>

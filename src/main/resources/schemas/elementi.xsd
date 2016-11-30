@@ -30,7 +30,7 @@
             <xs:appinfo>
                 <jaxb:class name="Part"/>
             </xs:appinfo>
-        </xs:annotation>       
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="elem:odjeljak" maxOccurs="unbounded"/>
@@ -55,7 +55,6 @@
         </xs:annotation>
         <xs:complexType>
             <xs:choice>
-                <xs:element maxOccurs="unbounded" ref="elem:pododjeljak"/>
                 <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:clan"/>
             </xs:choice>
             <xs:attributeGroup ref="elem:standard_attrs"/>
@@ -94,7 +93,7 @@
         </xs:annotation>
         <xs:complexType mixed="true">
             <xs:sequence>
-                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:tacka"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:tacka"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -118,9 +117,9 @@
                 <jaxb:class name="Subclause"/>
             </xs:appinfo>
         </xs:annotation>
-        <xs:complexType>
+        <xs:complexType mixed="true">
             <xs:sequence>
-                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:alineja"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:alineja"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
