@@ -24,11 +24,10 @@
                             <xs:element name="status">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:enumeration value="prihvaćen"/>
-                                        <xs:enumeration value="predložen"/>
+                                        <xs:enumeration value="prihvacen"/>
+                                        <xs:enumeration value="predlozen"/>
                                         <xs:enumeration value="odbijen"/>
-                                        <xs:whiteSpace value="preserve"/>
-                                        <xs:enumeration value="povučen"/>
+                                        <xs:enumeration value="povucen"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>

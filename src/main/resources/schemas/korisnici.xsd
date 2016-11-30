@@ -12,7 +12,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="ulica" type="xs:string"/>
-                <xs:element default="21000" name="poštanski_broj">
+                <xs:element default="21000" name="postanski_broj">
                     <xs:simpleType>
                         <xs:restriction base="xs:int">
                             <xs:minInclusive value="11000"/>
@@ -38,7 +38,7 @@
     <xs:complexType name="TPravno_lice">
         <xs:annotation>
             <xs:appinfo>
-                <jaxb:class name="Legal entity"/>
+                <jaxb:class name="LegalEntity"/>
             </xs:appinfo>
         </xs:annotation>
         <xs:complexContent>
@@ -76,9 +76,9 @@
                     <xs:element name="uloga">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:enumeration value="građanin"/>
+                                <xs:enumeration value="gradjanin"/>
                                 <xs:enumeration value="narodni_poslanik"/>
-                                <xs:enumeration value="predsednik_skupštine"/>
+                                <xs:enumeration value="predsednik_skupstine"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>

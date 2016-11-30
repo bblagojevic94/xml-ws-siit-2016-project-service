@@ -24,7 +24,7 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element ref="prop:propis" minOccurs="0"/>
-                            <xs:element name="rješenje">
+                            <xs:element name="rjesenje">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
                                         <xs:enumeration value="brisanje"/>
@@ -74,10 +74,10 @@
                             <xs:element name="status">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:enumeration value="prihvaćen"/>
+                                        <xs:enumeration value="prihvacen"/>
                                         <xs:enumeration value="odbijen"/>
-                                        <xs:enumeration value="predložen"/>
-                                        <xs:enumeration value="povučen"/>
+                                        <xs:enumeration value="predlozen"/>
+                                        <xs:enumeration value="povucen"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>

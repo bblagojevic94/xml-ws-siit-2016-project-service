@@ -19,7 +19,7 @@
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="uvodni_dio"/>
                         <xs:enumeration value="glavni_dio"/>
-                        <xs:enumeration value="završni_dio"/>
+                        <xs:enumeration value="zavrsni_dio"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
@@ -40,8 +40,8 @@
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="uvodne_odredbe"/>
-                        <xs:enumeration value="završne_odredbe"/>
-                        <xs:enumeration value="opšte_odredbe"/>
+                        <xs:enumeration value="zavrsne_odredbe"/>
+                        <xs:enumeration value="opste_odredbe"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
