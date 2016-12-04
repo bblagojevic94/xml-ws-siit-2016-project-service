@@ -22,7 +22,6 @@ import rs.ac.uns.sw.xml.util.Transformers;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -80,7 +79,7 @@ public class GlavaRepositoryXML {
             marshaller.marshal(toSearchResult(result), sw);
             String xmlString = sw.toString();
 
-            Transformers.toHtml(xmlString, "glave");
+            Transformers.toPdf(xmlString, "glave");
         } catch (JAXBException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -88,8 +87,6 @@ public class GlavaRepositoryXML {
         } catch (TransformerException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
 

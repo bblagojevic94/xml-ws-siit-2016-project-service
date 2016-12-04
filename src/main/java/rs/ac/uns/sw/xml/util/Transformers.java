@@ -1,5 +1,6 @@
 package rs.ac.uns.sw.xml.util;
 
+import org.apache.fop.apps.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
@@ -9,17 +10,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 
 @Component
 public class Transformers {
@@ -27,13 +23,62 @@ public class Transformers {
     private static final String ROOT_PATH_XSL   = "classpath:xsl-templates/";
     private static final String XSL_SUFIX       = "-template.xsl";
 
+    private static final String CONFIG_FILE_PATH = "classpath:conf/fop.xconf";
+
+    private static final String PDF_OUTPUT_FILE = "generated/propis.pdf";
+
     public Transformers() {
         super();
     }
 
-    // TODO - .xml -> .pdf
-    public static void toPdf(String xml, String xsl) {
-        // FIXME Not sure this is right params
+    public static void toPdf(String xml, String xsl) throws IOException, TransformerException, SAXException {
+
+        File folder = new File(CONFIG_FILE_PATH);
+
+        // Initialize FOP factory object
+        FopFactory fopFactory = FopFactory.newInstance(ResourceUtils.getFile(CONFIG_FILE_PATH));
+
+        // Setup the XSLT transformer factory
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+        // Point to the XSL-FO file
+        File xslFile = ResourceUtils.getFile(ROOT_PATH_XSL + "propis-pdf-transformer-fo.xsl");
+
+        // Create transformation source
+        StreamSource transformSource = new StreamSource(xslFile);
+
+        // Initialize the transformation subject
+        StreamSource source = new StreamSource(new StringReader(xml));
+
+        // Initialize user agent needed for the transformation
+        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+
+        // Create the output stream to store the results
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        // Initialize the XSL-FO transformer object
+        Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
+
+        // Construct FOP instance with desired output format
+        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outStream);
+
+        // Resulting SAX events
+        Result res = new SAXResult(fop.getDefaultHandler());
+
+        // Start XSLT transformation and FOP processing
+        xslFoTransformer.transform(source, res);
+
+        // Generate PDF file
+        File pdfFile = new File(PDF_OUTPUT_FILE);
+        if (!pdfFile.getParentFile().exists()) {
+            System.out.println("[INFO] A new directory is created: " + pdfFile.getParentFile().getAbsolutePath() + ".");
+            pdfFile.getParentFile().mkdir();
+        }
+
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
+        out.write(outStream.toByteArray());
+
+        out.close();
     }
 
      // @param xml   '.xml' string that needs to be converted to '.xhtml'
