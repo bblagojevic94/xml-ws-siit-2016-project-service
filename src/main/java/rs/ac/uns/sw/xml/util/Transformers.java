@@ -1,6 +1,10 @@
 package rs.ac.uns.sw.xml.util;
 
-import org.apache.fop.apps.*;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
@@ -31,9 +35,7 @@ public class Transformers {
         super();
     }
 
-    public static void toPdf(String xml, String xsl) throws IOException, TransformerException, SAXException {
-
-        File folder = new File(CONFIG_FILE_PATH);
+    public static InputStreamResource toPdf(String xml) throws IOException, TransformerException, SAXException {
 
         // Initialize FOP factory object
         FopFactory fopFactory = FopFactory.newInstance(ResourceUtils.getFile(CONFIG_FILE_PATH));
@@ -79,6 +81,8 @@ public class Transformers {
         out.write(outStream.toByteArray());
 
         out.close();
+
+        return new InputStreamResource(new FileInputStream(new File(PDF_OUTPUT_FILE)));
     }
 
      // @param xml   '.xml' string that needs to be converted to '.xhtml'
