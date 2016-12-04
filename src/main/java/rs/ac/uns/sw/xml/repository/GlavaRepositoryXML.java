@@ -79,7 +79,7 @@ public class GlavaRepositoryXML {
             marshaller.marshal(toSearchResult(result), sw);
             String xmlString = sw.toString();
 
-            Transformers.toPdf(xmlString, "glave");
+            Transformers.toPdf(xmlString);
         } catch (JAXBException e) {
             e.printStackTrace();
         } catch (SAXException e) {
