@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.parlament.gov.rs/schema/korisnici}TLice">
  *       &lt;sequence>
- *         &lt;element name="ime" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
- *         &lt;element name="prezime" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+ *         &lt;element name="ime" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="prezime" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -41,19 +41,19 @@ public class Individual
 {
 
     @XmlElement(namespace = "http://www.parlament.gov.rs/schema/korisnici", required = true)
-    protected Object ime;
+    protected String ime;
     @XmlElement(namespace = "http://www.parlament.gov.rs/schema/korisnici", required = true)
-    protected Object prezime;
+    protected String prezime;
 
     /**
      * Gets the value of the ime property.
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public Object getIme() {
+    public String getIme() {
         return ime;
     }
 
@@ -62,10 +62,10 @@ public class Individual
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public void setIme(Object value) {
+    public void setIme(String value) {
         this.ime = value;
     }
 
@@ -74,10 +74,10 @@ public class Individual
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public Object getPrezime() {
+    public String getPrezime() {
         return prezime;
     }
 
@@ -86,10 +86,10 @@ public class Individual
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public void setPrezime(Object value) {
+    public void setPrezime(String value) {
         this.prezime = value;
     }
 

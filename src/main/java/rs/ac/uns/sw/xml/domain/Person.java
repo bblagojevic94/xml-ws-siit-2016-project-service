@@ -3,6 +3,7 @@ package rs.ac.uns.sw.xml.domain;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element ref="{http://www.parlament.gov.rs/schema/korisnici}Adresa"/>
  *       &lt;/sequence>
+ *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}long" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -39,6 +41,8 @@ public abstract class Person {
 
     @XmlElement(name = "Adresa", namespace = "http://www.parlament.gov.rs/schema/korisnici", required = true)
     protected Address adresa;
+    @XmlAttribute(name = "id")
+    protected Long id;
 
     /**
      * Gets the value of the adresa property.
@@ -62,6 +66,30 @@ public abstract class Person {
      */
     public void setAdresa(Address value) {
         this.adresa = value;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setId(Long value) {
+        this.id = value;
     }
 
 }
