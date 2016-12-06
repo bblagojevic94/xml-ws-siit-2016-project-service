@@ -3,7 +3,7 @@ package rs.ac.uns.sw.xml.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.sw.xml.domain.Glava;
-import rs.ac.uns.sw.xml.domain.wrapper.GlavaSearchResult;
+import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.repository.GlavaRepositoryXML;
 
 @Service
@@ -16,11 +16,11 @@ public class GlavaServiceXML {
         return repositoryXML.save(g);
     }
 
-    public GlavaSearchResult getAll() {
+    public SearchResult getAll() {
         return repositoryXML.findAll();
     }
 
-    public GlavaSearchResult findByOdjeljakContains(String query) {
+    public SearchResult findByOdjeljakContains(String query) {
         return repositoryXML.findByOdjeljakContains(query);
     }
 }

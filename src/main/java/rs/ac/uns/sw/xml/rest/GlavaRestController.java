@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import rs.ac.uns.sw.xml.domain.Glava;
-import rs.ac.uns.sw.xml.domain.wrapper.GlavaSearchResult;
+import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.service.GlavaServiceXML;
 
 import java.net.URISyntaxException;
@@ -42,8 +42,8 @@ public class GlavaRestController {
             method   = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<GlavaSearchResult> getGlave() {
-        GlavaSearchResult result = service.getAll();
+    public ResponseEntity<SearchResult> getGlave() {
+        SearchResult result = service.getAll();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -53,8 +53,8 @@ public class GlavaRestController {
             method   = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<GlavaSearchResult> searchGlaveByOdjeljak(@RequestParam(name = "query") String query) {
-        GlavaSearchResult result = service.findByOdjeljakContains(query);
+    public ResponseEntity<SearchResult> searchGlaveByOdjeljak(@RequestParam(name = "query") String query) {
+        SearchResult result = service.findByOdjeljakContains(query);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
