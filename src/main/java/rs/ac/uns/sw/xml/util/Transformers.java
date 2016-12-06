@@ -109,7 +109,7 @@ public class Transformers {
     private static Document buildDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        // factory.setNamespaceAware(true);
+        factory.setNamespaceAware(true);
         factory.setIgnoringComments(true);
         factory.setIgnoringElementContentWhitespace(true);
 
