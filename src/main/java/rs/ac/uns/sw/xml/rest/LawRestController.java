@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Law;
+import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.util.Transformers;
 
@@ -44,6 +45,17 @@ public class LawRestController {
                         .buildAndExpand(glava.getId()).toUri());
 
         return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(
+            value    = "/",
+            method   = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> getLaws() {
+        SearchResult result = service.getAll();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(
