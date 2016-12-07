@@ -34,6 +34,7 @@
         <xs:sequence>
             <xs:element ref="kor:Adresa"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:long"/>
     </xs:complexType>
     <xs:complexType name="TPravno_lice">
         <xs:annotation>
@@ -58,8 +59,8 @@
         <xs:complexContent>
             <xs:extension base="kor:TLice">
                 <xs:sequence>
-                    <xs:element name="ime"/>
-                    <xs:element name="prezime"/>
+                    <xs:element name="ime" type="xs:string"/>
+                    <xs:element name="prezime" type="xs:string"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -86,4 +87,22 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:element name="korisnik_aplikacije">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="AppUser"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="kor:TKorisnik">
+                    <xs:sequence>
+                        <xs:element name="korisnicko_ime" type="xs:string"/>
+                        <xs:element name="lozinka" type="xs:string"/>
+                        <xs:element name="email" type="xs:string"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

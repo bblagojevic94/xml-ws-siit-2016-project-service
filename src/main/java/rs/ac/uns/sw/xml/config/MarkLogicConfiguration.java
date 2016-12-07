@@ -8,7 +8,9 @@ import com.marklogic.client.query.QueryManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rs.ac.uns.sw.xml.domain.AppUser;
 import rs.ac.uns.sw.xml.domain.Glava;
+import rs.ac.uns.sw.xml.domain.User;
 
 import javax.xml.bind.JAXBException;
 
@@ -30,8 +32,9 @@ public class MarkLogicConfiguration {
     @Bean
     public DatabaseClient getDatabaseClient() {
         try {
-            DatabaseClientFactory.getHandleRegistry()
-                    .register(JAXBHandle.newFactory(Glava.class));
+            DatabaseClientFactory.HandleFactoryRegistry registry = DatabaseClientFactory.getHandleRegistry();
+            registry.register(JAXBHandle.newFactory(Glava.class));
+            registry.register(JAXBHandle.newFactory(AppUser.class));
         }
         catch (JAXBException e) {
             e.printStackTrace();

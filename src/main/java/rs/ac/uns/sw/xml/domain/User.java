@@ -4,6 +4,7 @@ package rs.ac.uns.sw.xml.domain;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -37,6 +38,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TKorisnik", namespace = "http://www.parlament.gov.rs/schema/korisnici", propOrder = {
     "uloga"
+})
+@XmlSeeAlso({
+    AppUser.class
 })
 public class User
     extends Individual
