@@ -52,7 +52,7 @@ public class UserRepositoryXML {
         return String.format("/api_users/%s.xml", id);
     }
 
-    public AppUser findByEmail(String email) {
+    public AppUser findOneByUsername(String username) {
         StructuredQueryBuilder qb = queryManager.newStructuredQueryBuilder();
 
         // Defining namespace mappings
@@ -64,7 +64,7 @@ public class UserRepositoryXML {
         QueryDefinition query = qb.and(
                 qb.collection("/api_users.xml"),
                 // search by element with elementName=email, namespace=http://www.parlament.gov.rs/schema/korisnici, prefix=kor
-                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, "email", "kor")), email)
+                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, "korisnicko_ime", "kor")), username)
         );
 
         DocumentPage page = documentManager.search(query, 1);
