@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Glava;
-import rs.ac.uns.sw.xml.domain.wrapper.GlavaSearchResult;
+import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.Transformers;
 
 import javax.xml.bind.JAXBContext;
@@ -64,7 +64,7 @@ public class GlavaRepositoryXML {
         return (Glava) result.get(Glava.class);
     }
 
-    public GlavaSearchResult findAll() {
+    public SearchResult findAll() {
         StructuredQueryBuilder builder = queryManager.newStructuredQueryBuilder();
         StructuredQueryDefinition criteria = builder.collection(COLLECTION_REF);
 
@@ -72,7 +72,7 @@ public class GlavaRepositoryXML {
         queryManager.search(criteria, result);
 
         try {
-            JAXBContext context = JAXBContext.newInstance(GlavaSearchResult.class);
+            JAXBContext context = JAXBContext.newInstance(SearchResult.class);
             Marshaller marshaller = context.createMarshaller();
 
             StringWriter sw = new StringWriter();
@@ -96,7 +96,7 @@ public class GlavaRepositoryXML {
 
     // ADVANCED REPOSITORY FUNCTIONS
     // Sample XQuery evaluation on server
-    public GlavaSearchResult findByOdjeljakContains(String query) {
+    public SearchResult findByOdjeljakContains(String query) {
         String xquery = "for $x in collection(\"/glave.xml\")/glava\n" +
                 "where contains($x/odjeljak, \"" + query + "\")\n" +
                 "return $x";
@@ -125,14 +125,14 @@ public class GlavaRepositoryXML {
 
 
     // PRIVATE HELPER FUNCTIONS
-    private GlavaSearchResult toSearchResult(SearchHandle resultHandler) {
-        List<Glava> products = new ArrayList<>();
+    private SearchResult toSearchResult(SearchHandle resultHandler) {
+        List<Object> products = new ArrayList<>();
         for (MatchDocumentSummary summary : resultHandler.getMatchResults()) {
             JAXBHandle contentHandle = getProductHandle();
             documentManager.read(summary.getUri(), contentHandle);
-            products.add((Glava) contentHandle.get(Glava.class));
+            products.add(contentHandle.get(Glava.class));
         }
-        return new GlavaSearchResult(products);
+        return new SearchResult(products);
     }
 
     private JAXBHandle getProductHandle() {
