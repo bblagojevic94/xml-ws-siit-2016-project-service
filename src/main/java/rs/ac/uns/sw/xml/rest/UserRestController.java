@@ -15,14 +15,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import rs.ac.uns.sw.xml.domain.AppUser;
-import rs.ac.uns.sw.xml.domain.User;
 import rs.ac.uns.sw.xml.security.TokenUtils;
 import rs.ac.uns.sw.xml.service.UserServiceXML;
 
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserRestController {
 
     @Autowired
@@ -41,10 +40,10 @@ public class UserRestController {
 
 
     @RequestMapping(
-            value = "/users/auth",
+            value = "/auth",
             method = RequestMethod.POST
     )
-    public ResponseEntity<AuthResponse> authenticate(@RequestParam(value = "email") String username, @RequestParam(value = "password") String password) {
+    public ResponseEntity<AuthResponse> authenticate(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
@@ -58,7 +57,7 @@ public class UserRestController {
 
 
     @RequestMapping(
-            value    = "/users",
+            value    = "/",
             method   = RequestMethod.POST,
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
@@ -77,7 +76,7 @@ public class UserRestController {
 
 
     @RequestMapping(
-            value    = "/users/{id}",
+            value    = "/{id}",
             method   = RequestMethod.GET,
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE

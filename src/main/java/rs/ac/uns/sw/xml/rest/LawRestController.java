@@ -37,7 +37,7 @@ public class LawRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Law> addLaw(@RequestBody Law glava, UriComponentsBuilder builder) throws URISyntaxException {
-        Law result = service.create(glava);
+        final Law result = service.create(glava);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(
@@ -53,7 +53,7 @@ public class LawRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<SearchResult> getLaws() {
-        SearchResult result = service.getAll();
+        final SearchResult result = service.getAll();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -64,7 +64,7 @@ public class LawRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Law> getLawByName(@PathVariable String name) {
-        Law result = service.getOneByName(name);
+        final Law result = service.getOneByName(name);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -75,10 +75,11 @@ public class LawRestController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
 
     )
+    // FIXME Do refactoring...
     public ResponseEntity<InputStreamResource> downloadLawPDF(@PathVariable String name)
             throws IOException, JAXBException, TransformerException, SAXException {
 
-        Law result = service.getOneByName(name);
+        final Law result = service.getOneByName(name);
 
         JAXBContext context = JAXBContext.newInstance(Law.class);
         Marshaller marshaller = context.createMarshaller();
@@ -99,10 +100,11 @@ public class LawRestController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
 
     )
+    // FIXME Do refactoring...
     public ResponseEntity<Law> downloadLawHtml(@PathVariable String name)
             throws IOException, JAXBException, TransformerException, SAXException, ParserConfigurationException {
 
-        Law result = service.getOneByName(name);
+        final Law result = service.getOneByName(name);
 
         JAXBContext context = JAXBContext.newInstance(Law.class);
         Marshaller marshaller = context.createMarshaller();

@@ -18,8 +18,6 @@ import rs.ac.uns.sw.xml.util.RepositoryUtil;
 
 import javax.xml.namespace.QName;
 
-import static rs.ac.uns.sw.xml.config.MarkLogicConstants.*;
-
 @Component
 public class UserRepositoryXML {
 
@@ -33,7 +31,7 @@ public class UserRepositoryXML {
     DatabaseClient databaseClient;
 
     public AppUser save(AppUser document) {
-        RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(COLLECTION_USERS, AppUser.class);
+        RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(MarkLogicConstants.Collections.USERS, AppUser.class);
 
         handler.getContentHandle().set(document);
 
@@ -45,11 +43,8 @@ public class UserRepositoryXML {
     public AppUser findById(Long id) {
         JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(AppUser.class);
         JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
-        return (AppUser) result.get(AppUser.class);
-    }
 
-    private String getDocumentId(Long id) {
-        return String.format("/api_users/%s.xml", id);
+        return (AppUser) result.get(AppUser.class);
     }
 
     public AppUser findOneByUsername(String username) {
@@ -77,5 +72,8 @@ public class UserRepositoryXML {
         return null;
     }
 
+    private String getDocumentId(Long id) {
+        return String.format("/api_users/%s.xml", id);
+    }
 
 }

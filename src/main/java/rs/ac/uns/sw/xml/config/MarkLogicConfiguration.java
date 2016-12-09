@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rs.ac.uns.sw.xml.domain.AppUser;
-import rs.ac.uns.sw.xml.domain.Glava;
-import rs.ac.uns.sw.xml.domain.User;
+import rs.ac.uns.sw.xml.domain.Law;
 
 import javax.xml.bind.JAXBException;
+
+import static com.marklogic.client.DatabaseClientFactory.Authentication.*;
 
 @Configuration
 public class MarkLogicConfiguration {
@@ -33,14 +34,16 @@ public class MarkLogicConfiguration {
     public DatabaseClient getDatabaseClient() {
         try {
             DatabaseClientFactory.HandleFactoryRegistry registry = DatabaseClientFactory.getHandleRegistry();
-            registry.register(JAXBHandle.newFactory(Glava.class));
+
+            registry.register(JAXBHandle.newFactory(Law.class));
             registry.register(JAXBHandle.newFactory(AppUser.class));
         }
         catch (JAXBException e) {
             e.printStackTrace();
         }
 
-        return DatabaseClientFactory.newClient(host, port, username, password, DatabaseClientFactory.Authentication.DIGEST);
+        //noinspection deprecation
+        return DatabaseClientFactory.newClient(host, port, username, password, DIGEST);
     }
 
     @Bean

@@ -1,6 +1,5 @@
 package rs.ac.uns.sw.xml.domain.wrapper;
 
-import rs.ac.uns.sw.xml.domain.Glava;
 import rs.ac.uns.sw.xml.domain.Law;
 
 import javax.xml.bind.annotation.*;
@@ -8,11 +7,12 @@ import java.util.List;
 
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlSeeAlso({Glava.class, Law.class})
+@XmlSeeAlso({Law.class})
 public class SearchResult {
 
     private List<Object> set;
 
+    @SuppressWarnings("unused")
     public SearchResult() {
         super();
     }
