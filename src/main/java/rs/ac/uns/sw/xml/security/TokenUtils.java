@@ -21,10 +21,10 @@ public class TokenUtils {
     private static final String AUDIENCE_TABLET = "tablet";
     private static final String CREATED = "created";
 
-    @Value("${sct.token.secret}")
+    @Value("${xmlws.token.secret}")
     private String secret;
 
-    @Value("${sct.token.expiration}")
+    @Value("${xmlws.token.expiration}")
     private Long expiration;
 
     /**

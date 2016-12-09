@@ -15,8 +15,10 @@ import java.io.IOException;
 @Component
 public class EntryPointUnauthorizedHandler implements AuthenticationEntryPoint {
 
+    public static final String ACCESS_DENIED = "Access Denied";
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ACCESS_DENIED);
     }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 @Component
 public class CorsFilter implements Filter {
 
-    @Value("${sct.token.header}")
+    @Value("${xmlws.token.header}")
     private String tokenHeader;
 
     @Override
