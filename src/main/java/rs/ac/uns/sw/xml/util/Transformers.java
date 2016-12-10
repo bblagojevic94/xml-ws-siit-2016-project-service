@@ -4,7 +4,9 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
@@ -24,86 +26,64 @@ import java.io.*;
 @Component
 public class Transformers {
 
-    private static final String ROOT_PATH_XSL   = "classpath:xsl-templates/";
-    private static final String XSL_SUFIX       = "-template.xsl";
+    @Value("classpath:conf/fop.xconf")
+    private Resource configFile;
 
-    private static final String CONFIG_FILE_PATH = "classpath:conf/fop.xconf";
-
-    private static final String PDF_OUTPUT_FILE = "generated/propis.pdf";
+    private String name;
 
     public Transformers() {
         super();
     }
 
-    public static InputStreamResource toPdf(String xml) throws IOException, TransformerException, SAXException {
-
-        // Initialize FOP factory object
-        FopFactory fopFactory = FopFactory.newInstance(ResourceUtils.getFile(CONFIG_FILE_PATH));
-
-        // Setup the XSLT transformer factory
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
-        // Point to the XSL-FO file
-        File xslFile = ResourceUtils.getFile(ROOT_PATH_XSL + "propis-pdf-transformer-fo.xsl");
-
-        // Create transformation source
-        StreamSource transformSource = new StreamSource(xslFile);
-
-        // Initialize the transformation subject
-        StreamSource source = new StreamSource(new StringReader(xml));
-
-        // Initialize user agent needed for the transformation
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
-
-        // Create the output stream to store the results
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-        // Initialize the XSL-FO transformer object
-        Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
-
-        // Construct FOP instance with desired output format
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outStream);
-
-        // Resulting SAX events
-        Result res = new SAXResult(fop.getDefaultHandler());
-
-        // Start XSLT transformation and FOP processing
-        xslFoTransformer.transform(source, res);
-
-        // Generate PDF file
-        File pdfFile = new File(PDF_OUTPUT_FILE);
-        if (!pdfFile.getParentFile().exists()) {
-            System.out.println("[INFO] A new directory is created: " + pdfFile.getParentFile().getAbsolutePath() + ".");
-            pdfFile.getParentFile().mkdir();
-        }
-
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
-        out.write(outStream.toByteArray());
-
-        out.close();
-
-        return new InputStreamResource(new FileInputStream(new File(PDF_OUTPUT_FILE)));
+    public Transformers(String name) throws FileNotFoundException {
+        this.name = name;
     }
 
-     // @param xml   '.xml' string that needs to be converted to '.xhtml'
-     // @param xsl   Name of '.xsl' file
-    public static void toHtml(String xml, String filename) throws TransformerException, IOException, SAXException, ParserConfigurationException {
+    public InputStreamResource toPdf(String xml)
+            throws IOException, TransformerException, SAXException {
 
-        // Initialize Transformer instance
-        StreamSource transformSource = new StreamSource(ResourceUtils.getFile(ROOT_PATH_XSL + filename + XSL_SUFIX));
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = factory.newTransformer(transformSource);
+        final FopFactory fopFactory = FopFactory.newInstance(configFile.getFile());
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+        // Init Transform file, Source file and Output Stream
+        final StreamSource transformSource = new StreamSource(initPdfTransformerFile());
+        final StreamSource source = new StreamSource(new StringReader(xml));
+        final FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Set transformer and initialize parameters
+        final Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
+        final Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outputStream);
+        final Result result = new SAXResult(fop.getDefaultHandler());
+
+        // Perform transform
+        xslFoTransformer.transform(source, result);
+
+        return new InputStreamResource(new ByteArrayInputStream(outputStream.toByteArray()));
+    }
+
+    public String toHtml(String xml)
+            throws TransformerException, IOException, SAXException, ParserConfigurationException {
+
+        // Init Transform file, Source file and Output Stream
+        final StreamSource transformSource = new StreamSource(initHtmlTransformerFile());
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        StringWriter writer = new StringWriter();
+
+        // Set Transformer and set parameters
+        final Transformer transformer = factory.newTransformer(transformSource);
         transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
         // Generate XHTML
         transformer.setOutputProperty(OutputKeys.METHOD, "xhtml");
 
-        // Transform DOM to HTML
-        DOMSource source = new DOMSource(buildDocument(xml));
-        FileOutputStream oFile = new FileOutputStream(new File(filename + ".html"), false);
-        StreamResult result = new StreamResult(oFile);
+        // Transform DOM to HTML and perform transform
+        final DOMSource source = new DOMSource(buildDocument(xml));
+        final StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
+
+        return writer.toString();
     }
 
     private static Document buildDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
@@ -117,4 +97,33 @@ public class Transformers {
         Document document = builder.parse(new InputSource(new StringReader(xml)));
         return document;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    private File initPdfTransformerFile() throws FileNotFoundException {
+        return ResourceUtils.getFile(pdfRoot + this.name + pdfExtension);
+    }
+
+    private File initHtmlTransformerFile() throws FileNotFoundException {
+        return ResourceUtils.getFile(xhtmlRoot + this.name + xhtmlExtension);
+    }
+
+    @Value("${xmlws.xsl.root.pdf}")
+    private String pdfRoot;
+
+    @Value("${xmlws.xsl.extension.pdf}")
+    private String pdfExtension;
+
+    @Value("${xmlws.xsl.root.xhtml}")
+    private String xhtmlRoot;
+
+    @Value("${xmlws.xsl.extension.xhtml}")
+    private String xhtmlExtension;
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.sw.xml.domain.AppUser;
-import rs.ac.uns.sw.xml.domain.User;
 import rs.ac.uns.sw.xml.repository.UserRepositoryXML;
 
 @Service
@@ -25,5 +24,5 @@ public class UserServiceXML {
 
     public AppUser findById(Long id) { return userRepositoryXML.findById(id); }
 
-    public AppUser findOneByUsername(String email) { return userRepositoryXML.findOneByUsername(email);}
+    public AppUser findOneByUsername(String username) { return userRepositoryXML.findOneByUsername(username);}
 }
