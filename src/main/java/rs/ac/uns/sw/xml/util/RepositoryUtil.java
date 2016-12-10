@@ -5,6 +5,8 @@ import com.marklogic.client.io.JAXBHandle;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 
 public class RepositoryUtil {
 
@@ -23,8 +25,18 @@ public class RepositoryUtil {
             JAXBContext context = JAXBContext.newInstance(neededClass);
             return new JAXBHandle(context);
         } catch (JAXBException e) {
-            throw new RuntimeException("Unable to create User Handle...", e);
+            throw new RuntimeException(getExceptionMessage(neededClass), e);
         }
+    }
+
+    public static String toXmlString(Object object, Class neededClass) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(neededClass);
+        Marshaller marshaller = context.createMarshaller();
+
+        StringWriter writer = new StringWriter();
+        marshaller.marshal(object, writer);
+
+        return writer.toString();
     }
 
     public static class ResultDocumentHandler{
@@ -52,5 +64,9 @@ public class RepositoryUtil {
         public void setContentHandle(JAXBHandle contentHandle) {
             this.contentHandle = contentHandle;
         }
+    }
+
+    private static String getExceptionMessage(Class neededClass) {
+        return "Unable to create " + neededClass.getName() + " Handle...";
     }
 }
