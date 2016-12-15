@@ -20,12 +20,19 @@
                 </style>
             </head>
             <body style="font-family: Arial;">
-                <xsl:apply-templates select="prop:propis/prop:body/elem:glava"/>
+                <xsl:apply-templates select="prop:propis/prop:body"/>
             </body>
         </html>
     </xsl:template>
 
-    <xsl:template match="prop:propis/prop:body/elem:glava">
+    <xsl:template match="elem:dio">
+        <h2 style="text-align: center; font-weight: bold;">
+            <xsl:value-of select="@name" />
+        </h2>
+        <xsl:apply-templates select="elem:glava"/>
+    </xsl:template>
+
+    <xsl:template match="elem:glava">
         <h2 style="text-align: center; font-weight: bold;">
             <xsl:value-of select="@name" />
         </h2>
