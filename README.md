@@ -29,7 +29,8 @@ Odabrati opciju ***+ New database*** i u polje ***Database name*** ukucati **xml
 Nakon toga, kliknuti na dugme ***Configure***. Selektovati opciju **Collection Lexicon**.  
 Kliknuti na dugme ***new REST API instances***.  
 Za polje ***Server Name*** odabrati **xmlDBServer**, a za ***Port*** podesiti **8011**. 
- 
+
+Nakon što se baza kreirala, potrebno je omogućiti **RDF triple index** opciju. Ulogovati se kao iznad navedeni korisnik. Pronaći xmlDB kreiranu bazu podataka. Zatim, opciju **triple index** prabaciti sa false na **true**.	  
     
     
 ### Mapiranje XML elemenata na Java klase
