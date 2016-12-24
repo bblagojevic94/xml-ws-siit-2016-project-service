@@ -22,7 +22,7 @@
                         <xs:enumeration value="zavrsni_dio"/>
                     </xs:restriction>
                 </xs:simpleType>
-            </xs:attribute>
+            </xs:attribute>    
         </xs:complexType>
     </xs:element>
     <xs:element name="glava">

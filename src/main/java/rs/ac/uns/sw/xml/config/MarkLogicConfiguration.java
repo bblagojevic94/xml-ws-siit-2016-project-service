@@ -8,6 +8,7 @@ import com.marklogic.client.query.QueryManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.AppUser;
 import rs.ac.uns.sw.xml.domain.Law;
 
@@ -37,6 +38,7 @@ public class MarkLogicConfiguration {
 
             registry.register(JAXBHandle.newFactory(Law.class));
             registry.register(JAXBHandle.newFactory(AppUser.class));
+            registry.register(JAXBHandle.newFactory(Amendments.class));
         }
         catch (JAXBException e) {
             e.printStackTrace();

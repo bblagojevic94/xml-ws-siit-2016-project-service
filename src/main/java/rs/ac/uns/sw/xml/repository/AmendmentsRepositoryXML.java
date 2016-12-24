@@ -10,13 +10,14 @@ import com.marklogic.client.query.StructuredQueryDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
-import rs.ac.uns.sw.xml.domain.Law;
+import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
 
 @Component
-public class LawRepositoryXML {
+public class AmendmentsRepositoryXML {
 
     @Autowired
     XMLDocumentManager documentManager;
@@ -27,30 +28,29 @@ public class LawRepositoryXML {
     @Autowired
     DatabaseClient databaseClient;
 
-    public Law save(Law law) {
-        RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(MarkLogicConstants.Collections.LAWS, Law.class);
+    public Amendments save(Amendments amendments) {
+        RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(MarkLogicConstants.Collections.AMENDMENTS, Amendments.class);
 
+        handler.getContentHandle().set(amendments);
+        String data = handler.getContentHandle().toString();
 
-        handler.getContentHandle().set(law);
+        RDFExtractorUtil.writeMetadata(data, databaseClient);
 
+        documentManager.write(getDocumentId(amendments.getName()), handler.getMetadata(), handler.getContentHandle());
 
-        System.out.println(handler.getContentHandle().toString());
-
-        documentManager.write(getDocumentId(law.getName()), handler.getMetadata(), handler.getContentHandle());
-
-        return findLawByName(law.getName());
+        return findLawByName(amendments.getName());
     }
 
-    public Law findLawByName(String name) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Law.class);
+    public Amendments findLawByName(String name) {
+        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
         JAXBHandle result = documentManager.read(getDocumentId(name), contentHandle);
 
-        return (Law) result.get(Law.class);
+        return (Amendments) result.get(Amendments.class);
     }
 
     public SearchResult findAll() {
 
-        ResultHandler handler = new ResultHandler(Law.class, documentManager);
+        ResultHandler handler = new ResultHandler(Amendments.class, documentManager);
 
         StructuredQueryBuilder builder = queryManager.newStructuredQueryBuilder();
         StructuredQueryDefinition criteria = builder.collection(MarkLogicConstants.Collections.LAWS);
@@ -62,7 +62,7 @@ public class LawRepositoryXML {
     }
 
     private String getDocumentId(String value) {
-        return String.format("/laws/%s.xml", value);
+        return String.format("/amendments/%s.xml", value);
     }
 
 }

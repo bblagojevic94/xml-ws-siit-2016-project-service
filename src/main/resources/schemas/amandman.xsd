@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    targetNamespace="http://www.parlament.gov.rs/schema/amandman"
-    xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
-    xmlns:prop="http://www.parlament.gov.rs/schema/propis"
-    xmlns:kor="http://www.parlament.gov.rs/schema/korisnici"
-    xmlns:aman="http://www.parlament.gov.rs/schema/amandman"
-    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
-
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified"
+           targetNamespace="http://www.parlament.gov.rs/schema/amandman"
+           xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+           xmlns:prop="http://www.parlament.gov.rs/schema/propis"
+           xmlns:kor="http://www.parlament.gov.rs/schema/korisnici"
+           xmlns:aman="http://www.parlament.gov.rs/schema/amandman"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
+           xmlns:pred="http://www.parlament.gov.rs/rdf_schema/skupstina#">
     <xs:import namespace="http://www.parlament.gov.rs/schema/elementi" schemaLocation="elementi.xsd"/>
     <xs:import namespace="http://www.parlament.gov.rs/schema/propis" schemaLocation="propis.xsd"/>
     <xs:import namespace="http://www.parlament.gov.rs/schema/korisnici"
-        schemaLocation="korisnici.xsd"/>
-
+               schemaLocation="korisnici.xsd"/>
     <xs:element name="amandman">
         <xs:annotation>
             <xs:appinfo>
@@ -70,7 +69,15 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="datum" type="xs:date"/>
-                            <xs:element name="podnosilac" type="kor:TKorisnik"/>
+                            <xs:element name="podnosilac">
+                                <xs:complexType>
+                                    <xs:complexContent>
+                                        <xs:extension base="kor:TKorisnik">
+                                            <xs:anyAttribute processContents="lax"/>
+                                        </xs:extension>
+                                    </xs:complexContent>
+                                </xs:complexType>
+                            </xs:element>
                             <xs:element name="status">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
@@ -101,6 +108,7 @@
                 </xs:element>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
+            <xs:anyAttribute processContents="lax"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="obrazlozenje">
