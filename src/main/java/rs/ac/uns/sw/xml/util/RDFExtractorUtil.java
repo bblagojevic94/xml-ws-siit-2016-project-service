@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class RDFExtractorUtil {
 
     private static final String XSLT_FILE = "./src/main/resources/xsl/grddl/grddl.xsl";
-    private static final String PARLIAMENT_NAMED_GRAPH_URI = "skupstina/metadata";
+    public static final String PARLIAMENT_NAMED_GRAPH_URI = "skupstina/metadata/meta";
 
     public static void extractMetadata(InputStream in, OutputStream out) throws IOException, TransformerException {
         // Initialize the transformation
@@ -39,7 +39,7 @@ public class RDFExtractorUtil {
         grddlTransformer.transform(source, result);
     }
 
-    public static void writeMetadata(String data, DatabaseClient databaseClient) {
+    public static void writeMetadata(String data, DatabaseClient databaseClient, String graphURI) {
         GraphManager graphManager = databaseClient.newGraphManager();
         graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
 
@@ -54,10 +54,12 @@ public class RDFExtractorUtil {
             // Write data to MarkLogic
             StringHandle handle = new StringHandle(out.toString())
                     .withMimetype(RDFMimeTypes.RDFXML);
-            graphManager.write(PARLIAMENT_NAMED_GRAPH_URI, handle);
+
+            // Change to merge
+            graphManager.write(graphURI, handle);
 
             // Checking if writing is well done
-            // System.out.println(readMetaData(databaseClient));
+            // System.out.println(readMetaData(databaseClient, graphURI));
 
             in.close();
             out.close();
@@ -68,13 +70,13 @@ public class RDFExtractorUtil {
         }
     }
 
-    public static String readMetaData(DatabaseClient databaseClient) throws IOException {
+    public static String readMetaData(DatabaseClient databaseClient, String graphURI) throws IOException {
         GraphManager graphManager = databaseClient.newGraphManager();
         graphManager.setDefaultMimetype(RDFMimeTypes.NTRIPLES);
 
         DOMHandle domHandle = new DOMHandle();
         // Retrieve RDF triplets in format (RDF/XML) other than default
-        graphManager.read(PARLIAMENT_NAMED_GRAPH_URI, domHandle).withMimetype(RDFMimeTypes.RDFXML);
+        graphManager.read(graphURI, domHandle).withMimetype(RDFMimeTypes.RDFXML);
         OutputStream out = new ByteArrayOutputStream();
         transform(domHandle.get(), out);
         out.close();

@@ -34,14 +34,14 @@ public class AmendmentsRepositoryXML {
         handler.getContentHandle().set(amendments);
         String data = handler.getContentHandle().toString();
 
-        RDFExtractorUtil.writeMetadata(data, databaseClient);
+        RDFExtractorUtil.writeMetadata(data, databaseClient, RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI);
 
         documentManager.write(getDocumentId(amendments.getName()), handler.getMetadata(), handler.getContentHandle());
 
-        return findLawByName(amendments.getName());
+        return findAmendmentByName(amendments.getName());
     }
 
-    public Amendments findLawByName(String name) {
+    public Amendments findAmendmentByName(String name) {
         JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
         JAXBHandle result = documentManager.read(getDocumentId(name), contentHandle);
 
@@ -49,11 +49,10 @@ public class AmendmentsRepositoryXML {
     }
 
     public SearchResult findAll() {
-
         ResultHandler handler = new ResultHandler(Amendments.class, documentManager);
 
         StructuredQueryBuilder builder = queryManager.newStructuredQueryBuilder();
-        StructuredQueryDefinition criteria = builder.collection(MarkLogicConstants.Collections.LAWS);
+        StructuredQueryDefinition criteria = builder.collection(MarkLogicConstants.Collections.AMENDMENTS);
 
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
