@@ -1,12 +1,15 @@
 package rs.ac.uns.sw.xml.util;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.io.DOMHandle;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.semantics.GraphManager;
 import com.marklogic.client.semantics.RDFMimeTypes;
 import org.apache.xalan.processor.TransformerFactoryImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
@@ -15,11 +18,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RDFExtractorUtil {
 
     private static final String XSLT_FILE = "./src/main/resources/xsl/grddl/grddl.xsl";
-    public static final String PARLIAMENT_NAMED_GRAPH_URI = "skupstina/metadata/meta";
+    public static final String PARLIAMENT_NAMED_GRAPH_URI = "skupstina/metadata";
 
     public static void extractMetadata(InputStream in, OutputStream out) throws IOException, TransformerException {
         // Initialize the transformation
@@ -39,6 +44,7 @@ public class RDFExtractorUtil {
         grddlTransformer.transform(source, result);
     }
 
+    @Async
     public static void writeMetadata(String data, DatabaseClient databaseClient, String graphURI) {
         GraphManager graphManager = databaseClient.newGraphManager();
         graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
@@ -111,5 +117,24 @@ public class RDFExtractorUtil {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static List<String> handleResults(JacksonHandle resultsHandle) {
+        JsonNode tuples = resultsHandle.get().path("results").path("bindings");
+        List<String> list = new ArrayList<>();
+
+        StringBuilder builder = new StringBuilder();
+        for ( JsonNode row : tuples ) {
+            String subject = row.path("s").path("value").asText();
+            String predicate = row.path("p").path("value").asText();
+            String object = row.path("o").path("value").asText();
+
+            if (!subject.equals("")) {
+                list.add(subject);
+            }
+        }
+
+        return list;
     }
 }

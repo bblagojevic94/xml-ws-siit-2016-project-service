@@ -3,10 +3,15 @@ package rs.ac.uns.sw.xml.repository;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.io.marker.SPARQLResultsReadHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
+import com.marklogic.client.semantics.SPARQLMimeTypes;
+import com.marklogic.client.semantics.SPARQLQueryDefinition;
+import com.marklogic.client.semantics.SPARQLQueryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
@@ -15,6 +20,12 @@ import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
+
+import java.util.List;
+
+import static rs.ac.uns.sw.xml.util.PredicatesConstants.SUGGESTED;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.handleResults;
 
 @Component
 public class AmendmentsRepositoryXML {
@@ -34,11 +45,11 @@ public class AmendmentsRepositoryXML {
         handler.getContentHandle().set(amendments);
         String data = handler.getContentHandle().toString();
 
-        RDFExtractorUtil.writeMetadata(data, databaseClient, RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI);
+        RDFExtractorUtil.writeMetadata(data, databaseClient, PARLIAMENT_NAMED_GRAPH_URI);
 
         documentManager.write(getDocumentId(amendments.getName()), handler.getMetadata(), handler.getContentHandle());
 
-        return findAmendmentByName(amendments.getName());
+        return  findAmendmentByName(amendments.getName());
     }
 
     public Amendments findAmendmentByName(String name) {
@@ -64,4 +75,19 @@ public class AmendmentsRepositoryXML {
         return String.format("/amendments/%s.xml", value);
     }
 
+
+    public List<String> findAmendmentsByProposer(String proposerName){
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition("SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o }")
+                .withBinding("o", proposerName)
+                .withBinding("p", SUGGESTED);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+        return handleResults(resultsHandle);
+    }
 }
