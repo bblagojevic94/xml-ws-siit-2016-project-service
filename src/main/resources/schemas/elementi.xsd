@@ -2,7 +2,12 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     targetNamespace="http://www.parlament.gov.rs/schema/elementi"
     xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
-    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <xs:import namespace="http://www.w3.org/1999/xhtml"
+        schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
+
     <xs:element name="dio">
         <xs:annotation>
             <xs:appinfo>
@@ -22,7 +27,7 @@
                         <xs:enumeration value="zavrsni_dio"/>
                     </xs:restriction>
                 </xs:simpleType>
-            </xs:attribute>    
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="glava">
@@ -56,6 +61,7 @@
         <xs:complexType>
             <xs:choice>
                 <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:clan"/>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:pododjeljak"/>
             </xs:choice>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -68,7 +74,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="elem:odjeljak"/>
+                <xs:element ref="elem:clan" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -94,6 +100,7 @@
         <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:tacka"/>
+                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -106,7 +113,8 @@
         </xs:annotation>
         <xs:complexType mixed="true">
             <xs:sequence>
-                <xs:element maxOccurs="unbounded" minOccurs="2" ref="elem:podtacka"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:podtacka"/>
+                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -120,6 +128,7 @@
         <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:alineja"/>
+                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -130,16 +139,23 @@
                 <jaxb:class name="Item"/>
             </xs:appinfo>
         </xs:annotation>
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attributeGroup ref="elem:standard_attrs"/>
-                </xs:extension>
-            </xs:simpleContent>
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
     </xs:element>
     <xs:attributeGroup name="standard_attrs">
         <xs:attribute name="id" type="xs:anyURI" use="required"/>
         <xs:attribute name="name" type="xs:string" use="optional"/>
     </xs:attributeGroup>
+    <xs:group name="stilizovan_tekst">
+        <xs:choice>
+            <xs:element ref="xhtml:strong"/>
+            <xs:element ref="xhtml:em"/>
+            <xs:element ref="xhtml:del"/>
+            <xs:element ref="xhtml:ins"/>
+        </xs:choice>
+    </xs:group>
 </xs:schema>

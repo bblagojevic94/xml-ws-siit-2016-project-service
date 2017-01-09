@@ -22,7 +22,6 @@
                 <xs:element name="head">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element ref="prop:propis" minOccurs="0"/>
                             <xs:element name="rjesenje">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
@@ -32,13 +31,18 @@
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
+                            <xs:element name="predmet">
+                                <xs:complexType>
+                                    <xs:attribute name="predmetId" type="xs:IDREF"/>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="body">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="odredba">
+                            <xs:element name="odredba" minOccurs="0">
                                 <xs:complexType>
                                     <xs:choice>
                                         <xs:element ref="elem:clan"/>
@@ -88,15 +92,6 @@
                                     </xs:simpleContent>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="podnosilac">
-                                <xs:complexType>
-                                    <xs:complexContent>
-                                        <xs:extension base="kor:TKorisnik">
-                                            <xs:anyAttribute processContents="lax"/>
-                                        </xs:extension>
-                                    </xs:complexContent>
-                                </xs:complexType>
-                            </xs:element>
                             <xs:element name="status">
                                 <xs:complexType>
                                     <xs:simpleContent>
@@ -136,6 +131,16 @@
                                             />
                                         </xs:extension>
                                     </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="podnosilac">
+                                <xs:complexType>
+                                    <xs:attribute name="korisnikId" type="xs:IDREF"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="propis">
+                                <xs:complexType>
+                                    <xs:attribute name="propisId" type="xs:IDREF"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
