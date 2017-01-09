@@ -13,100 +13,91 @@
                 <xsl:apply-templates select="aman:amandmani/aman:body"/>
             </body>
         </html>
-
-        <xsl:template match="aman:pravni_osnov">
-            <p>Pravni osnov</p>
-        </xsl:template>
-
-        <xsl:template match="aman:amandman">
-            <h1>Amandman pronadjen</h1>
-            <xsl:apply-templates/>
-        </xsl:template>
-
-        <xsl:template match="aman:odredba">
-            <p>
-                Odredba...
-            </p>
-            <xsl:apply-templates/>
-        </xsl:template>
-
-        <xsl:template match="aman:obrazlozenje">
-            <h4>Obrazlozenje</h4>
-            <xsl:apply-templates/>
-        </xsl:template>
-
-        <!-- Elementi za obrazlozenje amandmana -->
-        <xsl:template match="aman:razlog">
-            <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
-                Razlog podnosenja amandmana
-            </h6>
-            <p>
-                <xsl:value-of select="current()"/>
-            </p>
-        </xsl:template>
-
-        <xsl:template match="aman:objasnjene_predlozenog_rjesenja">
-            <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
-                Objasnjenje predlozenog rjesenja
-            </h6>
-            <p>
-                <xsl:value-of select="current()"/>
-            </p>
-        </xsl:template>
-
-        <xsl:template match="aman:cilj">
-            <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
-                Cilj
-            </h6>
-            <p>
-                <xsl:value-of select="current()"/>
-            </p>
-        </xsl:template>
-
-        <xsl:template match="aman:uticaj_na_budzetska_sredstva">
-            <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
-                Uticaj na budzetska sredstva
-            </h6>
-            <p>
-                <xsl:value-of select="current()"/>
-            </p>
-        </xsl:template>
-
-        <!-- Elementi koji se mogu naci u odredbi amandmana -->
-        <xsl:template match="elem:clan">
-            <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
-                <xsl:value-of select="@name"/>
-            </h6>
-            <h6 style="text-align: center; font-size: 12pt">
-                <i>Član <xsl:number format="1." level="any" count="elem:clan"/></i>
-            </h6>
-            <xsl:apply-templates select="elem:stav"/>
-        </xsl:template>
-
-        <xsl:template match="elem:stav">
-            <p style="font-size: 11pt; text-align: justify">
-                <xsl:value-of select="current()"/>
-            </p>
-            <xsl:apply-templates select="elem:tacka"/>
-        </xsl:template>
-
-        <xsl:template match="elem:tacka">
-            <ol>
-                <li style="font-size: 11pt; text-align: justify">
-                    <xsl:value-of select="current()"/>
-
-                    <xsl:apply-templates select="elem:podtacka"/>
-                </li>
-            </ol>
-        </xsl:template>
-
-        <xsl:template match="elem:podtacka">
-            <ol class="podtacka">
-                <li style="font-size: 11pt; text-align: justify">
-                    <xsl:value-of select="current()"/>
-                </li>
-            </ol>
-        </xsl:template>
-
     </xsl:template>
+
+    <xsl:template match="aman:amandmani/aman:body">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="aman:pravni_osnov">
+        <h3>Pravni osnov</h3>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="aman:amandman/aman:head">
+        <!-- Ne prikazuj vrijednosti iz aman:head-a -->
+    </xsl:template>
+
+    <xsl:template match="aman:amandman/aman:body">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="aman:odredba">
+        <h3>Odredba</h3>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="aman:obrazlozenje">
+        <h4>Obrazloženje</h4>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <!-- Elementi za obrazlozenje amandmana -->
+    <xsl:template match="aman:razlog">
+        <h5 style="font-weight: bold; text-align: center; font-size: 12pt">Razlog podnošenja amandmana</h5>
+        <p><xsl:value-of select="current()"/></p>
+    </xsl:template>
+
+    <xsl:template match="aman:objasnjene_predlozenog_rjesenja">
+        <h5 style="font-weight: bold; text-align: center; font-size: 12pt">Objašnjenje predloženog rješenja</h5>
+        <p><xsl:value-of select="current()"/></p>
+    </xsl:template>
+
+    <xsl:template match="aman:cilj">
+        <h5 style="font-weight: bold; text-align: center; font-size: 12pt">Cilj</h5>
+        <p><xsl:value-of select="current()"/></p>
+    </xsl:template>
+
+    <xsl:template match="aman:uticaj_na_budzetska_sredstva">
+        <h5 style="font-weight: bold; text-align: center; font-size: 12pt">Uticaj na budžetska sredstva
+        </h5>
+        <p><xsl:value-of select="current()"/></p>
+    </xsl:template>
+
+    <!-- Elementi koji se mogu naci u odredbi amandmana -->
+    <xsl:template match="elem:clan">
+        <h6 style="font-weight: bold; text-align: center; font-size: 12pt">
+            <xsl:value-of select="@name"/>
+        </h6>
+        <h6 style="text-align: center; font-size: 12pt">
+            <i>Član <xsl:number format="1." level="any" count="elem:clan"/></i>
+        </h6>
+        <xsl:apply-templates select="elem:stav"/>
+    </xsl:template>
+
+    <xsl:template match="elem:stav">
+        <p style="font-size: 11pt; text-align: justify">
+            <xsl:value-of select="current()"/>
+        </p>
+        <xsl:apply-templates select="elem:tacka"/>
+    </xsl:template>
+
+    <xsl:template match="elem:tacka">
+        <ol>
+            <li style="font-size: 11pt; text-align: justify">
+                <xsl:value-of select="current()"/>
+
+                <xsl:apply-templates select="elem:podtacka"/>
+            </li>
+        </ol>
+    </xsl:template>
+
+    <xsl:template match="elem:podtacka">
+        <ol class="podtacka">
+            <li style="font-size: 11pt; text-align: justify">
+                <xsl:value-of select="current()"/>
+            </li>
+        </ol>
+    </xsl:template>
+
 </xsl:stylesheet>

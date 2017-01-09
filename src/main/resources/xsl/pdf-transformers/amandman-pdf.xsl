@@ -13,63 +13,67 @@
 
     <xsl:template match="aman:pravni_osnov">
         <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
-            <!--xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyzčćžđš', 'ABCDEFGHIJKLMNOPQRSTUVWXYZČĆŽĐŠ')"/-->
             Pravni osnov
         </fo:block>
-        <fo:block>
-            <!--xsl:apply-templates select="elem:glava"/-->
-        </fo:block>
+        <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="aman:amandman">
-        <fo:block>
-            Amandman
-        </fo:block>
-        <fo:block>
-            <xsl:apply-templates/>
-        </fo:block>
+    <xsl:template match="aman:amandman/aman:head">
+        <!-- Ne prikazuj vrijednosti iz aman:head-a -->
+    </xsl:template>
+
+    <xsl:template match="aman:amandman/aman:body">
+        <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="aman:odredba">
-        <fo:block>
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
             Odredba
         </fo:block>
-        <fo:block>
-            <xsl:apply-templates/>
-        </fo:block>
+        <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="aman:obrazlozenje">
-        <fo:block>
-            Obrazlozenje
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
+            Obrazloženje
         </fo:block>
-        <fo:block>
-            <xsl:apply-templates/>
-        </fo:block>
+        <xsl:apply-templates/>
     </xsl:template>
 
     <!-- Elementi za obrazlozenje amandmana -->
     <xsl:template match="aman:razlog">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
+            Razlog podnošenja amandmana
+        </fo:block>
         <fo:block>
-            Razlog
+            <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:objasnjene_predlozenog_rjesenja">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
+            Objašnjenje predloženog rješenja
+        </fo:block>
         <fo:block>
-            Objasnjenje predlozenog rjesenja
+            <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:cilj">
-        <fo:block>
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
             Cilj
+        </fo:block>
+        <fo:block>
+            <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:uticaj_na_budzetska_sredstva">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
+            Uticaj na budžetska sredstva
+        </fo:block>
         <fo:block>
-            Uticaj na budzetska sredstva
+            <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
@@ -115,6 +119,9 @@
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
             (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
+        </fo:block>
+        <fo:block>
+            <xsl:apply-templates select="elem:alineja"/>
         </fo:block>
     </xsl:template>
 
