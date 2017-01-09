@@ -8,8 +8,6 @@ import rs.ac.uns.sw.xml.repository.AmendmentsRepositoryXML;
 
 import java.util.List;
 
-import static rs.ac.uns.sw.xml.util.PredicatesConstants.SUGGESTED;
-
 @Service
 public class AmendmentsServiceXML {
 
@@ -21,4 +19,8 @@ public class AmendmentsServiceXML {
     }
 
     public List<String> findByProposer(String proposer) { return repositoryXML.findAmendmentsByProposer(proposer);}
+
+    public Amendments getOneByName(String name) {
+        return repositoryXML.findAmendmentByName(name);
+    }
 }

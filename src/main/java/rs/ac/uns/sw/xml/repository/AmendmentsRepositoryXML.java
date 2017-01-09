@@ -5,7 +5,6 @@ import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
-import com.marklogic.client.io.marker.SPARQLResultsReadHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
@@ -49,7 +48,7 @@ public class AmendmentsRepositoryXML {
 
         documentManager.write(getDocumentId(amendments.getName()), handler.getMetadata(), handler.getContentHandle());
 
-        return  findAmendmentByName(amendments.getName());
+        return amendments;
     }
 
     public Amendments findAmendmentByName(String name) {
