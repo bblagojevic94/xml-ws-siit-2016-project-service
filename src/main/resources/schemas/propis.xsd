@@ -16,23 +16,76 @@
             </xs:appinfo>
         </xs:annotation>
         <xs:complexType>
-            <xs:choice>
+            <xs:sequence>
                 <xs:element name="head">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="datum" type="xs:date"/>
-                            <xs:element name="status">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:enumeration value="prihvacen"/>
-                                        <xs:enumeration value="predlozen"/>
-                                        <xs:enumeration value="odbijen"/>
-                                        <xs:enumeration value="povucen"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
+                            <xs:element name="datum_predloga">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:date">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
                             </xs:element>
-                            <xs:element name="podnosilac" type="kor:TKorisnik"/>
+                            <xs:element name="datum_izglasavanja">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:date">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="status">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
                             <xs:element name="mjesto" type="xs:string"/>
+                            <xs:element name="glasova_za">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:int">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="glasova_protiv">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:int">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="glasova_suzdrzani">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:int">
+                                            <xs:anyAttribute namespace="##any" processContents="lax"
+                                            />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="podnosilac">
+                                <xs:complexType>
+                                    <xs:attribute name="korisnikId" type="xs:IDREF"/>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -44,7 +97,7 @@
                         </xs:choice>
                     </xs:complexType>
                 </xs:element>
-            </xs:choice>
+            </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
     </xs:element>
