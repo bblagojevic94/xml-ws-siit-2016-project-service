@@ -30,15 +30,12 @@ public class LawRepositoryXML {
     public Law save(Law law) {
         RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(MarkLogicConstants.Collections.LAWS, Law.class);
 
-
         handler.getContentHandle().set(law);
-
-
-        System.out.println(handler.getContentHandle().toString());
 
         documentManager.write(getDocumentId(law.getName()), handler.getMetadata(), handler.getContentHandle());
 
-        return findLawByName(law.getName());
+        // Return same element because of speed
+        return law;
     }
 
     public Law findLawByName(String name) {

@@ -79,6 +79,13 @@
                 <xsl:value-of select="current()"/>
             </li>
         </ol>
+        <xsl:apply-templates select="elem:tacka"/>
+    </xsl:template>
+
+    <xsl:template match="elem:alineja">
+        <p>
+            - <xsl:value-of select="current()"/>
+        </p>
     </xsl:template>
 
 </xsl:stylesheet>

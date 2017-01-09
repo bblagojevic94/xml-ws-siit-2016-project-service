@@ -25,6 +25,8 @@ import java.net.URISyntaxException;
 @RequestMapping("/api/laws")
 public class LawRestController {
 
+    private static final String NAME = "propis";
+
     @Autowired
     LawServiceXML service;
 
@@ -81,8 +83,7 @@ public class LawRestController {
 
         final Law result = service.getOneByName(name);
 
-        // FIXME Export as constant
-        transformer.setName("propis");
+        transformer.setName(NAME);
 
         return ResponseEntity
                 .ok()
@@ -101,8 +102,7 @@ public class LawRestController {
 
         final Law result = service.getOneByName(name);
 
-        // FIXME Export as constant
-        transformer.setName("propis");
+        transformer.setName(NAME);
 
         return ResponseEntity
                 .ok()
