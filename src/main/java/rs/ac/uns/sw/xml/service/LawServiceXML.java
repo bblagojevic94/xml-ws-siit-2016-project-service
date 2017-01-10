@@ -20,6 +20,10 @@ public class LawServiceXML {
         return repositoryXML.findAll();
     }
 
+    public SearchResult getAllByQuery(String query) {
+        return repositoryXML.findAllByQuery(query);
+    }
+
     public Law getOneByName(String name) {
         return repositoryXML.findLawByName(name);
     }
