@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -26,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element ref="{http://www.parlament.gov.rs/schema/propis}propis" minOccurs="0"/>
  *                     &lt;element name="rjesenje">
  *                       &lt;simpleType>
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -35,6 +35,15 @@ import javax.xml.bind.annotation.XmlType;
  *                           &lt;enumeration value="dopuna"/>
  *                         &lt;/restriction>
  *                       &lt;/simpleType>
+ *                     &lt;/element>
+ *                     &lt;element name="predmet">
+ *                       &lt;complexType>
+ *                         &lt;complexContent>
+ *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                             &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+ *                           &lt;/restriction>
+ *                         &lt;/complexContent>
+ *                       &lt;/complexType>
  *                     &lt;/element>
  *                   &lt;/sequence>
  *                 &lt;/restriction>
@@ -46,7 +55,7 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element name="odredba">
+ *                     &lt;element name="odredba" minOccurs="0">
  *                       &lt;complexType>
  *                         &lt;complexContent>
  *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -202,7 +211,7 @@ public class Amendment {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="odredba">
+     *         &lt;element name="odredba" minOccurs="0">
      *           &lt;complexType>
      *             &lt;complexContent>
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -233,7 +242,7 @@ public class Amendment {
     })
     public static class Body {
 
-        @XmlElement(namespace = "http://www.parlament.gov.rs/schema/amandman", required = true)
+        @XmlElement(namespace = "http://www.parlament.gov.rs/schema/amandman")
         protected Amendment.Body.Odredba odredba;
         @XmlElement(namespace = "http://www.parlament.gov.rs/schema/amandman", required = true)
         protected Explanation obrazlozenje;
@@ -466,7 +475,6 @@ public class Amendment {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element ref="{http://www.parlament.gov.rs/schema/propis}propis" minOccurs="0"/>
      *         &lt;element name="rjesenje">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -475,6 +483,15 @@ public class Amendment {
      *               &lt;enumeration value="dopuna"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="predmet">
+     *           &lt;complexType>
+     *             &lt;complexContent>
+     *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *                 &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+     *               &lt;/restriction>
+     *             &lt;/complexContent>
+     *           &lt;/complexType>
      *         &lt;/element>
      *       &lt;/sequence>
      *     &lt;/restriction>
@@ -486,39 +503,15 @@ public class Amendment {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "propis",
-        "rjesenje"
+        "rjesenje",
+        "predmet"
     })
     public static class Head {
 
-        @XmlElement(namespace = "http://www.parlament.gov.rs/schema/propis")
-        protected Law propis;
         @XmlElement(namespace = "http://www.parlament.gov.rs/schema/amandman", required = true)
         protected String rjesenje;
-
-        /**
-         * Gets the value of the propis property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Law }
-         *     
-         */
-        public Law getPropis() {
-            return propis;
-        }
-
-        /**
-         * Sets the value of the propis property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Law }
-         *     
-         */
-        public void setPropis(Law value) {
-            this.propis = value;
-        }
+        @XmlElement(namespace = "http://www.parlament.gov.rs/schema/amandman", required = true)
+        protected Amendment.Head.Predmet predmet;
 
         /**
          * Gets the value of the rjesenje property.
@@ -542,6 +535,83 @@ public class Amendment {
          */
         public void setRjesenje(String value) {
             this.rjesenje = value;
+        }
+
+        /**
+         * Gets the value of the predmet property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link Amendment.Head.Predmet }
+         *     
+         */
+        public Amendment.Head.Predmet getPredmet() {
+            return predmet;
+        }
+
+        /**
+         * Sets the value of the predmet property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link Amendment.Head.Predmet }
+         *     
+         */
+        public void setPredmet(Amendment.Head.Predmet value) {
+            this.predmet = value;
+        }
+
+
+        /**
+         * <p>Java class for anonymous complex type.
+         * 
+         * <p>The following schema fragment specifies the expected content contained within this class.
+         * 
+         * <pre>
+         * &lt;complexType>
+         *   &lt;complexContent>
+         *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+         *       &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+         *     &lt;/restriction>
+         *   &lt;/complexContent>
+         * &lt;/complexType>
+         * </pre>
+         * 
+         * 
+         */
+        @XmlAccessorType(XmlAccessType.FIELD)
+        @XmlType(name = "")
+        public static class Predmet {
+
+            @XmlAttribute(name = "predmetId", namespace = "http://www.parlament.gov.rs/schema/amandman")
+            @XmlIDREF
+            @XmlSchemaType(name = "IDREF")
+            protected Object predmetId;
+
+            /**
+             * Gets the value of the predmetId property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link Object }
+             *     
+             */
+            public Object getPredmetId() {
+                return predmetId;
+            }
+
+            /**
+             * Sets the value of the predmetId property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link Object }
+             *     
+             */
+            public void setPredmetId(Object value) {
+                this.predmetId = value;
+            }
+
         }
 
     }

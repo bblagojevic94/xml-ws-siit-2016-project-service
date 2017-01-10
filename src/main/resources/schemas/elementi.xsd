@@ -2,12 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     targetNamespace="http://www.parlament.gov.rs/schema/elementi"
     xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
-    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
-    xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
-    <xs:import namespace="http://www.w3.org/1999/xhtml"
-        schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
-
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
     <xs:element name="dio">
         <xs:annotation>
             <xs:appinfo>
@@ -100,7 +95,6 @@
         <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:tacka"/>
-                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -114,7 +108,6 @@
         <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:podtacka"/>
-                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -128,7 +121,6 @@
         <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="elem:alineja"/>
-                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
@@ -140,9 +132,6 @@
             </xs:appinfo>
         </xs:annotation>
         <xs:complexType mixed="true">
-            <xs:sequence>
-                <xs:group maxOccurs="unbounded" minOccurs="0" ref="elem:stilizovan_tekst"/>
-            </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
     </xs:element>
@@ -150,12 +139,4 @@
         <xs:attribute name="id" type="xs:anyURI" use="required"/>
         <xs:attribute name="name" type="xs:string" use="optional"/>
     </xs:attributeGroup>
-    <xs:group name="stilizovan_tekst">
-        <xs:choice>
-            <xs:element ref="xhtml:strong"/>
-            <xs:element ref="xhtml:em"/>
-            <xs:element ref="xhtml:del"/>
-            <xs:element ref="xhtml:ins"/>
-        </xs:choice>
-    </xs:group>
 </xs:schema>

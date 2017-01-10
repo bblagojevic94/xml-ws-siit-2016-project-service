@@ -1,6 +1,8 @@
 
 package rs.ac.uns.sw.xml.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;complexContent>
  *       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *         &lt;sequence>
- *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}odjeljak"/>
+ *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}clan" maxOccurs="unbounded"/>
  *         &lt;/sequence>
  *       &lt;/restriction>
  *     &lt;/complexContent>
@@ -31,36 +33,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "odjeljak"
+    "clan"
 })
 @XmlRootElement(name = "pododjeljak", namespace = "http://www.parlament.gov.rs/schema/elementi")
 public class Subsection {
 
     @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi", required = true)
-    protected Section odjeljak;
+    protected List<Article> clan;
 
     /**
-     * Gets the value of the odjeljak property.
+     * Gets the value of the clan property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Section }
-     *     
-     */
-    public Section getOdjeljak() {
-        return odjeljak;
-    }
-
-    /**
-     * Sets the value of the odjeljak property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the clan property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Section }
-     *     
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getClan().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Article }
+     * 
+     * 
      */
-    public void setOdjeljak(Section value) {
-        this.odjeljak = value;
+    public List<Article> getClan() {
+        if (clan == null) {
+            clan = new ArrayList<Article>();
+        }
+        return this.clan;
     }
 
 }
