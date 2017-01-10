@@ -86,3 +86,5 @@ overridedb.*
 .factorypath
 dump.rdb
 transaction-logs
+
+src/main/java/rs/ac/uns/sw/xml/domain/

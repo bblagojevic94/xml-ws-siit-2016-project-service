@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;complexContent>
  *       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *         &lt;sequence>
- *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}podtacka" maxOccurs="unbounded" minOccurs="2"/>
+ *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}podtacka" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;/sequence>
  *         &lt;attGroup ref="{http://www.parlament.gov.rs/schema/elementi}standard_attrs"/>
  *       &lt;/restriction>
@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "tacka", namespace = "http://www.parlament.gov.rs/schema/elementi")
 public class Clause {
 
-    @XmlElementRef(name = "podtacka", namespace = "http://www.parlament.gov.rs/schema/elementi", type = Subclause.class)
+    @XmlElementRef(name = "podtacka", namespace = "http://www.parlament.gov.rs/schema/elementi", type = Subclause.class, required = false)
     @XmlMixed
     protected List<Object> content;
     @XmlAttribute(name = "id", required = true)
@@ -69,8 +69,8 @@ public class Clause {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
      * {@link Subclause }
+     * {@link String }
      * 
      * 
      */

@@ -4,7 +4,8 @@
     xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
     xmlns:prop="http://www.parlament.gov.rs/schema/propis"
     xmlns:kor="http://www.parlament.gov.rs/schema/korisnici"
-    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
+    xmlns:pred="http://www.parlament.gov.rs/rdf_schema/skupstina#">
     <xs:import namespace="http://www.parlament.gov.rs/schema/elementi" schemaLocation="elementi.xsd"/>
     <xs:import namespace="http://www.parlament.gov.rs/schema/korisnici"
         schemaLocation="korisnici.xsd"/>
@@ -87,6 +88,7 @@
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
+                        <xs:anyAttribute namespace="##any" processContents="lax"/>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="body">
@@ -99,6 +101,7 @@
                 </xs:element>
             </xs:sequence>
             <xs:attributeGroup ref="elem:standard_attrs"/>
+            <xs:anyAttribute namespace="##any" processContents="lax"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

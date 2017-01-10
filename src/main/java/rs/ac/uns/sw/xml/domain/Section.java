@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *         &lt;choice>
  *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}clan" maxOccurs="unbounded"/>
+ *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}pododjeljak" maxOccurs="unbounded"/>
  *         &lt;/choice>
  *         &lt;attGroup ref="{http://www.parlament.gov.rs/schema/elementi}standard_attrs"/>
  *       &lt;/restriction>
@@ -36,13 +37,16 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "clan"
+    "clan",
+    "pododjeljak"
 })
 @XmlRootElement(name = "odjeljak", namespace = "http://www.parlament.gov.rs/schema/elementi")
 public class Section {
 
     @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi")
     protected List<Article> clan;
+    @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi")
+    protected List<Subsection> pododjeljak;
     @XmlAttribute(name = "id", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String id;
@@ -76,6 +80,35 @@ public class Section {
             clan = new ArrayList<Article>();
         }
         return this.clan;
+    }
+
+    /**
+     * Gets the value of the pododjeljak property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the pododjeljak property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getPododjeljak().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Subsection }
+     * 
+     * 
+     */
+    public List<Subsection> getPododjeljak() {
+        if (pododjeljak == null) {
+            pododjeljak = new ArrayList<Subsection>();
+        }
+        return this.pododjeljak;
     }
 
     /**
