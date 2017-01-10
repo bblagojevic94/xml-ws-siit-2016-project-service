@@ -123,4 +123,17 @@ public class LawRestController {
                 .body(result);
     }
 
+    @RequestMapping(
+            value = "/update",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Law> update() {
+        Law result = service.updateWithAmendments(null);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
+
 }

@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.repository.LawRepositoryXML;
@@ -14,6 +15,10 @@ public class LawServiceXML {
 
     public Law create(Law law) {
         return repositoryXML.save(law);
+    }
+
+    public Law updateWithAmendments(Amendments amendments) {
+        return repositoryXML.updateLawWithAmendments(amendments);
     }
 
     public SearchResult getAll() {

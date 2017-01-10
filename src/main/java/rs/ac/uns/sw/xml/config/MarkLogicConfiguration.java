@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.config;
 
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
+import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.query.QueryManager;
@@ -56,6 +57,11 @@ public class MarkLogicConfiguration {
     @Bean
     public XMLDocumentManager getXMLDocumentManager() {
         return getDatabaseClient().newXMLDocumentManager();
+    }
+
+    @Bean
+    public DocumentPatchBuilder getDocumentPatchBuilder() {
+        return getXMLDocumentManager().newPatchBuilder();
     }
 
 }
