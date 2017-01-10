@@ -18,11 +18,11 @@ import javax.xml.bind.annotation.XmlValue;
  * <pre>
  * &lt;element name="alineja">
  *   &lt;complexType>
- *     &lt;simpleContent>
- *       &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+ *     &lt;complexContent>
+ *       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *         &lt;attGroup ref="{http://www.parlament.gov.rs/schema/elementi}standard_attrs"/>
- *       &lt;/extension>
- *     &lt;/simpleContent>
+ *       &lt;/restriction>
+ *     &lt;/complexContent>
  *   &lt;/complexType>
  * &lt;/element>
  * </pre>
@@ -31,13 +31,13 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "content"
 })
 @XmlRootElement(name = "alineja", namespace = "http://www.parlament.gov.rs/schema/elementi")
 public class Item {
 
     @XmlValue
-    protected String value;
+    protected String content;
     @XmlAttribute(name = "id", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String id;
@@ -45,27 +45,27 @@ public class Item {
     protected String name;
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the content property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getValue() {
-        return value;
+    public String getContent() {
+        return content;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the content property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setContent(String value) {
+        this.content = value;
     }
 
     /**

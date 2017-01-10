@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
+
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
 
 @Component
 public class LawRepositoryXML {
@@ -31,7 +34,9 @@ public class LawRepositoryXML {
         RepositoryUtil.ResultDocumentHandler handler = RepositoryUtil.documentHandle(MarkLogicConstants.Collections.LAWS, Law.class);
 
         handler.getContentHandle().set(law);
+        String data = handler.getContentHandle().toString();
 
+        RDFExtractorUtil.writeMetadata(data, databaseClient, PARLIAMENT_NAMED_GRAPH_URI);
         documentManager.write(getDocumentId(law.getName()), handler.getMetadata(), handler.getContentHandle());
 
         // Return same element because of speed

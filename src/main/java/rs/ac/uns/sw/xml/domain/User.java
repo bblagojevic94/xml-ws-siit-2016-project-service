@@ -40,7 +40,6 @@ import javax.xml.bind.annotation.XmlType;
     "uloga"
 })
 @XmlSeeAlso({
-    rs.ac.uns.sw.xml.domain.Amendments.Head.Podnosilac.class,
     AppUser.class
 })
 public class User
