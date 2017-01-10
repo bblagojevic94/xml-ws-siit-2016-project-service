@@ -18,6 +18,8 @@ import rs.ac.uns.sw.xml.util.RepositoryUtil;
 
 import javax.xml.namespace.QName;
 
+import static rs.ac.uns.sw.xml.config.MarkLogicConstants.Prefixes.USERS_PREF;
+
 @Component
 public class UserRepositoryXML {
 
@@ -52,14 +54,15 @@ public class UserRepositoryXML {
 
         // Defining namespace mappings
         EditableNamespaceContext namespaces = new EditableNamespaceContext();
-        namespaces.put("kor", MarkLogicConstants.Namespaces.USERS);
+        namespaces.put(USERS_PREF, MarkLogicConstants.Namespaces.USERS);
 
         qb.setNamespaces(namespaces);
 
         QueryDefinition query = qb.and(
                 qb.collection("/api_users.xml"),
+
                 // search by element with elementName=email, namespace=http://www.parlament.gov.rs/schema/korisnici, prefix=kor
-                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, "korisnicko_ime", "kor")), username)
+                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, "korisnicko_ime", USERS_PREF)), username)
         );
 
         DocumentPage page = documentManager.search(query, 1);
