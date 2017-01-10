@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.parlament.gov.rs/rdf_schema/skupstina"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.parlament.gov.rs/rdf_schema/skupstina">
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Declaration>
+        <DataProperty IRI="#brojGlasovaZa"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#amandmanNa"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#glasaoZa"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#datumPredloga"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Odluka"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#seOdnosiNa"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#glasaoUzdrzan"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#statusAmandmana"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#glasao"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#predlozenOd"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Odbornik"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Amandman"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Gradjanin"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#statusOdluke"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#brojGlasovaUzdrzanih"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#datumIzglasavanja"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#glasaoProtiv"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Korisnik"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#predlagac"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#brojGlasovaProtiv"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Predsednik_skupstine"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Gradjanin"/>
+        <Class IRI="#Korisnik"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Odbornik"/>
+        <Class IRI="#Korisnik"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Predsednik_skupstine"/>
+        <Class IRI="#Odbornik"/>
+    </SubClassOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#amandmanNa"/>
+        <ObjectProperty IRI="#seOdnosiNa"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#glasao"/>
+        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#glasaoProtiv"/>
+        <ObjectProperty IRI="#glasao"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#glasaoUzdrzan"/>
+        <ObjectProperty IRI="#glasao"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#glasaoZa"/>
+        <ObjectProperty IRI="#glasao"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#predlagac"/>
+        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#predlozenOd"/>
+        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+    </SubObjectPropertyOf>
+    <InverseObjectProperties>
+        <ObjectProperty IRI="#predlagac"/>
+        <ObjectProperty IRI="#predlozenOd"/>
+    </InverseObjectProperties>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#amandmanNa"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#glasao"/>
+        <Class IRI="#Gradjanin"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#glasaoProtiv"/>
+        <Class IRI="#Odbornik"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#glasaoUzdrzan"/>
+        <Class IRI="#Odbornik"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#glasaoZa"/>
+        <Class IRI="#Odbornik"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#predlagac"/>
+        <Class IRI="#Odbornik"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#predlozenOd"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#predlozenOd"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#amandmanNa"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasao"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasao"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoProtiv"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoProtiv"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoUzdrzan"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoUzdrzan"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoZa"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#glasaoZa"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#predlagac"/>
+        <Class IRI="#Amandman"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#predlagac"/>
+        <Class IRI="#Odluka"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#predlozenOd"/>
+        <Class IRI="#Odbornik"/>
+    </ObjectPropertyRange>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#brojGlasovaUzdrzanih"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#brojGlasovaZa"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#datumIzglasavanja"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#datumPredloga"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#statusAmandmana"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#statusOdluke"/>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+    </SubDataPropertyOf>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaProtiv"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaProtiv"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaUzdrzanih"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaUzdrzanih"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaZa"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#brojGlasovaZa"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#datumIzglasavanja"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#datumIzglasavanja"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#datumPredloga"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#datumPredloga"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#statusAmandmana"/>
+        <Class IRI="#Amandman"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#statusOdluke"/>
+        <Class IRI="#Odluka"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#brojGlasovaProtiv"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#brojGlasovaUzdrzanih"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#brojGlasovaZa"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#datumIzglasavanja"/>
+        <Datatype abbreviatedIRI="xsd:dateTime"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#datumPredloga"/>
+        <Datatype abbreviatedIRI="xsd:dateTime"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#statusAmandmana"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#statusOdluke"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
+
