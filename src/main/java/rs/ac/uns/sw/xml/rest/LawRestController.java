@@ -109,4 +109,18 @@ public class LawRestController {
                 .body(transformer.toHtml(RepositoryUtil.toXmlString(result, Law.class)));
     }
 
+    @RequestMapping(
+            value = "/search",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> searchLaws(@RequestParam("query") String query) {
+
+        final SearchResult result = service.getAllByQuery(query);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
+
 }

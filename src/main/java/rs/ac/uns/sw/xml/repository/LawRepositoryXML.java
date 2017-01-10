@@ -4,9 +4,7 @@ import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.SearchHandle;
-import com.marklogic.client.query.QueryManager;
-import com.marklogic.client.query.StructuredQueryBuilder;
-import com.marklogic.client.query.StructuredQueryDefinition;
+import com.marklogic.client.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
@@ -54,6 +52,20 @@ public class LawRepositoryXML {
 
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
+
+        return handler.toSearchResult(result);
+    }
+
+    public SearchResult findAllByQuery(String query) {
+
+        ResultHandler handler = new ResultHandler(Law.class, documentManager);
+
+        StringQueryDefinition queryDefinition = queryManager.newStringDefinition();
+        queryDefinition.setCriteria(query);
+        queryDefinition.setCollections(MarkLogicConstants.Collections.LAWS);
+
+        SearchHandle result = new SearchHandle();
+        queryManager.search(queryDefinition, result);
 
         return handler.toSearchResult(result);
     }
