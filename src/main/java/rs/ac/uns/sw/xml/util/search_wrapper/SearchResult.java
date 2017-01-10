@@ -1,4 +1,4 @@
-package rs.ac.uns.sw.xml.domain.wrapper;
+package rs.ac.uns.sw.xml.util.search_wrapper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

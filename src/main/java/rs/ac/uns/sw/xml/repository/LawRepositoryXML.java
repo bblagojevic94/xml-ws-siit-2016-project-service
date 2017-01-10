@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;

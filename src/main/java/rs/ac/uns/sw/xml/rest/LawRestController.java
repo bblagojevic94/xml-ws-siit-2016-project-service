@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.Transformers;

@@ -1,4 +1,4 @@
-package rs.ac.uns.sw.xml.domain.wrapper;
+package rs.ac.uns.sw.xml.util.search_wrapper;
 
 import rs.ac.uns.sw.xml.domain.Law;
 
