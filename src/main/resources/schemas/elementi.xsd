@@ -71,6 +71,7 @@
             <xs:sequence>
                 <xs:element ref="elem:clan" maxOccurs="unbounded"/>
             </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="clan">
@@ -79,7 +80,7 @@
                 <jaxb:class name="Article"/>
             </xs:appinfo>
         </xs:annotation>
-        <xs:complexType>
+        <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" minOccurs="1" ref="elem:stav"/>
             </xs:sequence>
@@ -139,4 +140,9 @@
         <xs:attribute name="id" type="xs:anyURI" use="required"/>
         <xs:attribute name="name" type="xs:string" use="optional"/>
     </xs:attributeGroup>
+    <xs:element name="ref">
+        <xs:complexType mixed="true">
+            <xs:attribute name="id" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

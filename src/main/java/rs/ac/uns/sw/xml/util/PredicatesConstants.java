@@ -11,8 +11,8 @@ public final class PredicatesConstants {
     public static final String VOTES_FOR = BASE_PREDICATE_URI + "brojGlasovaZa";
     public static final String VOTES_AGAINST = BASE_PREDICATE_URI + "brojGlasovaProtiv";
     public static final String VOTES_NEUTRAL = BASE_PREDICATE_URI + "brojGlasovaUzdrzanih";
-    public static final String DATE_OF_SUGGESTION = BASE_PREDICATE_URI + "datumPredloga";
+    public static final String DATE_OF_PROPOSAL = BASE_PREDICATE_URI + "datumPredloga";
     public static final String DATE_OF_VOTING = BASE_PREDICATE_URI + "datumIzglasavanja";
-    public static final String AMENDMENTS_STATUS = BASE_PREDICATE_URI + "statusAmandmaana";
+    public static final String AMENDMENTS_STATUS = BASE_PREDICATE_URI + "statusAmandmana";
     public static final String LAW_STATUS = BASE_PREDICATE_URI + "statusOdluke";
 }

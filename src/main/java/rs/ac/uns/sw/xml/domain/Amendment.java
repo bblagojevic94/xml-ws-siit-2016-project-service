@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -40,7 +39,9 @@ import javax.xml.bind.annotation.XmlType;
  *                       &lt;complexType>
  *                         &lt;complexContent>
  *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                             &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+ *                             &lt;sequence>
+ *                               &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+ *                             &lt;/sequence>
  *                           &lt;/restriction>
  *                         &lt;/complexContent>
  *                       &lt;/complexType>
@@ -488,7 +489,9 @@ public class Amendment {
      *           &lt;complexType>
      *             &lt;complexContent>
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *                 &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+     *                 &lt;sequence>
+     *                   &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+     *                 &lt;/sequence>
      *               &lt;/restriction>
      *             &lt;/complexContent>
      *           &lt;/complexType>
@@ -571,7 +574,9 @@ public class Amendment {
          * &lt;complexType>
          *   &lt;complexContent>
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *       &lt;attribute name="predmetId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+         *       &lt;sequence>
+         *         &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+         *       &lt;/sequence>
          *     &lt;/restriction>
          *   &lt;/complexContent>
          * &lt;/complexType>
@@ -580,36 +585,36 @@ public class Amendment {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "")
+        @XmlType(name = "", propOrder = {
+            "ref"
+        })
         public static class Predmet {
 
-            @XmlAttribute(name = "predmetId", namespace = "http://www.parlament.gov.rs/schema/amandman")
-            @XmlIDREF
-            @XmlSchemaType(name = "IDREF")
-            protected Object predmetId;
+            @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi", required = true)
+            protected Ref ref;
 
             /**
-             * Gets the value of the predmetId property.
+             * Gets the value of the ref property.
              * 
              * @return
              *     possible object is
-             *     {@link Object }
+             *     {@link Ref }
              *     
              */
-            public Object getPredmetId() {
-                return predmetId;
+            public Ref getRef() {
+                return ref;
             }
 
             /**
-             * Sets the value of the predmetId property.
+             * Sets the value of the ref property.
              * 
              * @param value
              *     allowed object is
-             *     {@link Object }
+             *     {@link Ref }
              *     
              */
-            public void setPredmetId(Object value) {
-                this.predmetId = value;
+            public void setRef(Ref value) {
+                this.ref = value;
             }
 
         }

@@ -48,7 +48,7 @@ public class AmendmentsRestController {
                 builder.path("/amendments/{id}.xml")
                         .buildAndExpand(amendments.getId()).toUri());
 
-        return new ResponseEntity<>(result, headers ,HttpStatus.CREATED);
+        return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(
@@ -57,7 +57,7 @@ public class AmendmentsRestController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<String>> searchAmendmentsByProposer(@PathVariable String proposerId) throws URISyntaxException {
-        final List<String> result = service.findByProposer( "http://www.ftn.uns.ac.rs/rdf/examples/person/" +  proposerId);
+        final List<String> result = service.findByProposer("http://www.ftn.uns.ac.rs/rdf/examples/person/" + proposerId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -71,7 +71,7 @@ public class AmendmentsRestController {
     public ResponseEntity<InputStreamResource> downloadAmendmentPDF(@PathVariable String name)
             throws IOException, JAXBException, TransformerException, SAXException {
 
-        final Amendments result = service.getOneByName(name);
+        final Amendments result = service.getOneById(name);
 
         transformer.setName(NAME);
 
@@ -90,7 +90,7 @@ public class AmendmentsRestController {
     public ResponseEntity<String> downloadAmendmentHtml(@PathVariable String name)
             throws IOException, JAXBException, TransformerException, SAXException, ParserConfigurationException {
 
-        final Amendments result = service.getOneByName(name);
+        final Amendments result = service.getOneById(name);
 
         transformer.setName(NAME);
 

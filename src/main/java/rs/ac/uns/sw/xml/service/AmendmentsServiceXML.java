@@ -20,7 +20,7 @@ public class AmendmentsServiceXML {
 
     public List<String> findByProposer(String proposer) { return repositoryXML.findAmendmentsByProposer(proposer);}
 
-    public Amendments getOneByName(String name) {
-        return repositoryXML.findAmendmentByName(name);
+    public Amendments getOneById(String id) {
+        return repositoryXML.findAmendmentById(id);
     }
 }
