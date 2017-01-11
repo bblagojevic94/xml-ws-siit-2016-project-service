@@ -1,19 +1,17 @@
-package rs.ac.uns.sw.xml.domain.wrapper;
+package rs.ac.uns.sw.xml.util.search_wrapper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.hateoas.ResourceSupport;
-import rs.ac.uns.sw.xml.domain.Law;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlSeeAlso({Law.class})
-public class SearchResult extends ResourceSupport {
+public class SearchResult {
 
-    private List<Object> set;
+    @XmlElement
+    private List<SearchObject> set;
 
     @SuppressWarnings("unused")
     public SearchResult() {
@@ -21,13 +19,11 @@ public class SearchResult extends ResourceSupport {
     }
 
     @JsonCreator
-    public SearchResult(@JsonProperty("set") List<Object> set) {
+    public SearchResult(@JsonProperty("set") List<SearchObject> set) {
         this.set = set;
     }
 
-    @XmlMixed
-    @XmlAnyElement(lax = true)
-    public List<Object> getSet() {
+    public List<SearchObject> getSet() {
         return set;
     }
 }

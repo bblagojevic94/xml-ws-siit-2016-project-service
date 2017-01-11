@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
-import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
@@ -46,7 +46,7 @@ public class AmendmentsRepositoryXML {
 
         RDFExtractorUtil.writeMetadata(data, databaseClient, PARLIAMENT_NAMED_GRAPH_URI);
 
-        documentManager.write(getDocumentId(amendments.getName()), handler.getMetadata(), handler.getContentHandle());
+        documentManager.write(getDocumentId(amendments.getId()), handler.getMetadata(), handler.getContentHandle());
 
         return amendments;
     }

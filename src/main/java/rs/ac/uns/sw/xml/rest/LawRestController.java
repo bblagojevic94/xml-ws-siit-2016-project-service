@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.domain.wrapper.SearchResult;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.Transformers;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -173,5 +173,31 @@ public class LawRestController {
             default:
                 return new ResponseEntity<>("Need Accept header", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value = "/search",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> searchLaws(@RequestParam("query") String query) {
+
+        final SearchResult result = service.getAllByQuery(query);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
+
+    @RequestMapping(
+            value = "/update",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Law> update() {
+        Law result = service.updateWithAmendments(null);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
     }
 }
