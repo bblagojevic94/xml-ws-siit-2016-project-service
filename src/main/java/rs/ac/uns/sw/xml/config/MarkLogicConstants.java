@@ -14,6 +14,7 @@ public final class MarkLogicConstants {
         public static final String LAWS         = "http://www.parlament.gov.rs/schema/propis";
         public static final String ELEMENTS     = "http://www.parlament.gov.rs/schema/elementi";
         public static final String USERS        = "http://www.parlament.gov.rs/schema/korisnici";
+        public static final String SCHEMA       = "http://www.w3.org/2001/XMLSchema#";
     }
 
     public final class Prefixes {
@@ -22,6 +23,7 @@ public final class MarkLogicConstants {
         public static final String LAWS_PREF        = "propis";
         public static final String ELEMENTS_PREF    = "elem";
         public static final String USERS_PREF       = "kor";
+        public static final String SCHEMA_PREF      = "xs";
     }
 
 }

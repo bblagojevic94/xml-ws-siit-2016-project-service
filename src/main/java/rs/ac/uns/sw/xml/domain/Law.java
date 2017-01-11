@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -94,7 +93,10 @@ import javax.xml.namespace.QName;
  *                       &lt;complexType>
  *                         &lt;complexContent>
  *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                             &lt;attribute name="korisnikId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+ *                             &lt;sequence>
+ *                               &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+ *                             &lt;/sequence>
+ *                             &lt;anyAttribute processContents='lax'/>
  *                           &lt;/restriction>
  *                         &lt;/complexContent>
  *                       &lt;/complexType>
@@ -425,7 +427,10 @@ public class Law {
      *           &lt;complexType>
      *             &lt;complexContent>
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *                 &lt;attribute name="korisnikId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+     *                 &lt;sequence>
+     *                   &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+     *                 &lt;/sequence>
+     *                 &lt;anyAttribute processContents='lax'/>
      *               &lt;/restriction>
      *             &lt;/complexContent>
      *           &lt;/complexType>
@@ -1034,7 +1039,10 @@ public class Law {
          * &lt;complexType>
          *   &lt;complexContent>
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *       &lt;attribute name="korisnikId" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+         *       &lt;sequence>
+         *         &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}ref"/>
+         *       &lt;/sequence>
+         *       &lt;anyAttribute processContents='lax'/>
          *     &lt;/restriction>
          *   &lt;/complexContent>
          * &lt;/complexType>
@@ -1043,36 +1051,56 @@ public class Law {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "")
+        @XmlType(name = "", propOrder = {
+            "ref"
+        })
         public static class Podnosilac {
 
-            @XmlAttribute(name = "korisnikId")
-            @XmlIDREF
-            @XmlSchemaType(name = "IDREF")
-            protected Object korisnikId;
+            @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi", required = true)
+            protected Ref ref;
+            @XmlAnyAttribute
+            private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
             /**
-             * Gets the value of the korisnikId property.
+             * Gets the value of the ref property.
              * 
              * @return
              *     possible object is
-             *     {@link Object }
+             *     {@link Ref }
              *     
              */
-            public Object getKorisnikId() {
-                return korisnikId;
+            public Ref getRef() {
+                return ref;
             }
 
             /**
-             * Sets the value of the korisnikId property.
+             * Sets the value of the ref property.
              * 
              * @param value
              *     allowed object is
-             *     {@link Object }
+             *     {@link Ref }
              *     
              */
-            public void setKorisnikId(Object value) {
-                this.korisnikId = value;
+            public void setRef(Ref value) {
+                this.ref = value;
+            }
+
+            /**
+             * Gets a map that contains attributes that aren't bound to any typed property on this class.
+             * 
+             * <p>
+             * the map is keyed by the name of the attribute and 
+             * the value is the string value of the attribute.
+             * 
+             * the map returned by this method is live, and you can add new attribute
+             * by updating the map directly. Because of this design, there's no setter.
+             * 
+             * 
+             * @return
+             *     always non-null
+             */
+            public Map<QName, String> getOtherAttributes() {
+                return otherAttributes;
             }
 
         }

@@ -51,9 +51,9 @@ public class AmendmentsRepositoryXML {
         return amendments;
     }
 
-    public Amendments findAmendmentByName(String name) {
+    public Amendments findAmendmentById(String id) {
         JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
-        JAXBHandle result = documentManager.read(getDocumentId(name), contentHandle);
+        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
 
         return (Amendments) result.get(Amendments.class);
     }

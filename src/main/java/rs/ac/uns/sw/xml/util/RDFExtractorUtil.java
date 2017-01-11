@@ -124,8 +124,10 @@ public class RDFExtractorUtil {
         JsonNode tuples = resultsHandle.get().path("results").path("bindings");
         List<String> list = new ArrayList<>();
 
+        System.out.println(tuples);
         StringBuilder builder = new StringBuilder();
         for ( JsonNode row : tuples ) {
+            System.out.println(row);
             String subject = row.path("s").path("value").asText();
             String predicate = row.path("p").path("value").asText();
             String object = row.path("o").path("value").asText();

@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -23,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;sequence>
  *           &lt;element ref="{http://www.parlament.gov.rs/schema/elementi}clan" maxOccurs="unbounded"/>
  *         &lt;/sequence>
+ *         &lt;attGroup ref="{http://www.parlament.gov.rs/schema/elementi}standard_attrs"/>
  *       &lt;/restriction>
  *     &lt;/complexContent>
  *   &lt;/complexType>
@@ -40,6 +43,11 @@ public class Subsection {
 
     @XmlElement(namespace = "http://www.parlament.gov.rs/schema/elementi", required = true)
     protected List<Article> clan;
+    @XmlAttribute(name = "id", required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String id;
+    @XmlAttribute(name = "name")
+    protected String name;
 
     /**
      * Gets the value of the clan property.
@@ -68,6 +76,54 @@ public class Subsection {
             clan = new ArrayList<Article>();
         }
         return this.clan;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setId(String value) {
+        this.id = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
     }
 
 }

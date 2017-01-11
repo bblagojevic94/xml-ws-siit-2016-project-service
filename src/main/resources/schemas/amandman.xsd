@@ -33,7 +33,9 @@
                             </xs:element>
                             <xs:element name="predmet">
                                 <xs:complexType>
-                                    <xs:attribute name="predmetId" type="xs:IDREF"/>
+                                    <xs:sequence>
+                                        <xs:element ref="elem:ref"/>
+                                    </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -135,12 +137,18 @@
                             </xs:element>
                             <xs:element name="podnosilac">
                                 <xs:complexType>
-                                    <xs:attribute name="korisnikId" type="xs:IDREF"/>
+                                    <xs:sequence>
+                                        <xs:element ref="elem:ref"/>
+                                    </xs:sequence>
+                                    <xs:anyAttribute namespace="##any" processContents="lax"/>
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="propis">
                                 <xs:complexType>
-                                    <xs:attribute name="propisId" type="xs:IDREF"/>
+                                    <xs:sequence>
+                                        <xs:element ref="elem:ref"/>
+                                    </xs:sequence>
+                                    <xs:anyAttribute namespace="##any" processContents="lax"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -174,10 +182,34 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="razlog"/>
-                <xs:element name="objasnjene_predlozenog_rjesenja"/>
-                <xs:element name="cilj"/>
-                <xs:element name="uticaj_na_budzetska_sredstva"/>
+                <xs:element name="razlog">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element ref="elem:ref" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="objasnjene_predlozenog_rjesenja">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element ref="elem:ref" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="cilj">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element ref="elem:ref" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="uticaj_na_budzetska_sredstva">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element ref="elem:ref" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
