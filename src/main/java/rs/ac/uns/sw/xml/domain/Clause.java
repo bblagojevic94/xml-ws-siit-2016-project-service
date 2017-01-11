@@ -69,8 +69,8 @@ public class Clause {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
      * {@link Subclause }
+     * {@link String }
      * 
      * 
      */
