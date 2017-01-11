@@ -21,14 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
-import rs.ac.uns.sw.xml.domain.Amendments;
-import rs.ac.uns.sw.xml.domain.Law;
+import rs.ac.uns.sw.xml.domain.*;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -65,28 +65,54 @@ public class LawRepositoryXML {
     }
 
     public Law updateLawWithAmendments(Amendments amendments) {
-        //final Amendment amendment = amendments.getBody().getAmandman().get(0);
 
-        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        final String lawId = amendments.getHead().getPropis().getRef().getId();
 
-        EditableNamespaceContext namespaces = new EditableNamespaceContext();
-        namespaces.put("aman", "http://www.parlament.gov.rs/schema/amandman");
-        namespaces.put("pred", "http://www.parlament.gov.rs/rdf_schema/skupstina#");
-        namespaces.put("elem", "http://www.parlament.gov.rs/schema/elementi");
-        //namespaces.put("prop", "http://www.parlament.gov.rs/schema/propis");
-        namespaces.put("fn", "http://www.w3.org/2005/xpath-functions");
+        DocumentPatchBuilder patchBuilder;
+        DocumentPatchHandle patchHandle;
 
-        patchBuilder.setNamespaces(namespaces);
+        String element = "";
 
-        String xpath = "/aman:amandmani/aman:body";
+        // FIXME Better implementation in code refactoring
+        for (final Amendment amendment: amendments.getBody().getAmandman()) {
+            final String type = amendment.getHead().getRjesenje();
+            final String ref = amendment.getHead().getPredmet().getRef().getId();
+            final String xpath = makeXPath(ref);
+            final String xpathTrimmed = xpath.substring(0, xpath.length() - 2);
 
-        //patchBuilder.insertFragment(path, DocumentPatchBuilder.Position.AFTER, "<a></a>");
-        patchBuilder.delete(xpath);
+            patchBuilder = documentManager.newPatchBuilder();
+            patchBuilder.setNamespaces(createNamespaces());
 
-        DocumentPatchHandle documentPatchHandle = patchBuilder.build();
-        documentManager.patch("/amendments/name0.xml", documentPatchHandle);
+            // FIXME Constants
+            switch (type) {
+                case "brisanje":
+                    patchBuilder.delete(xpathTrimmed);
+                    break;
 
-        return null;
+                case "izmjena":
+                    try {
+                        element = createXMLby(amendment.getBody().getOdredba());
+                    } catch (JAXBException e) {
+                        e.printStackTrace();
+                    }
+                    patchBuilder.replaceFragment(xpathTrimmed, element);
+                    break;
+
+                case "dopuna":
+                    try {
+                        element = createXMLby(amendment.getBody().getOdredba());
+                    } catch (JAXBException e) {
+                        e.printStackTrace();
+                    }
+                    patchBuilder.insertFragment(xpathTrimmed, DocumentPatchBuilder.Position.AFTER, element);
+                    break;
+            }
+
+            patchHandle = patchBuilder.build();
+            documentManager.patch(makeCollectionPath(lawId), patchHandle);
+        }
+
+        return findLawById(lawId);
     }
 
     public Law findLawById(String id) {
@@ -231,4 +257,76 @@ public class LawRepositoryXML {
         }
         return null;
     }
+
+
+    //FIXME Refactor and move to some Util class
+    private String makeXPath(String ref) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (String s: ref.split("/")) {
+            builder.append(String.format("%s[@id='%s']", "*", s));
+            builder.append("//");
+        }
+
+        return builder.toString();
+    }
+
+    private String makeCollectionPath(final String id) {
+        return String.format("/laws/%s.xml", id);
+    }
+
+    private EditableNamespaceContext createNamespaces() {
+        EditableNamespaceContext namespaces = new EditableNamespaceContext();
+
+        // FIXME Make constants
+        namespaces.put("aman", "http://www.parlament.gov.rs/schema/amandman");
+        namespaces.put("pred", "http://www.parlament.gov.rs/rdf_schema/skupstina#");
+        namespaces.put("elem", "http://www.parlament.gov.rs/schema/elementi");
+        //namespaces.put("prop", "http://www.parlament.gov.rs/schema/propis");
+        namespaces.put("fn", "http://www.w3.org/2005/xpath-functions");
+
+        return namespaces;
+    }
+
+    // FIXME Make util
+    private String createXMLby(Amendment.Body.Odredba odredba) throws JAXBException {
+
+        // Try to get Article
+        final Article article = odredba.getClan();
+        if (article != null) {
+            return cleanXML(RepositoryUtil.toXmlString(article, Article.class));
+        }
+
+        // Try to get Paragraph
+        final Paragraph paragraph = odredba.getStav();
+        if (paragraph != null) {
+            return cleanXML(RepositoryUtil.toXmlString(paragraph, Paragraph.class));
+        }
+
+        // Try to get Clause
+        final Clause clause = odredba.getTacka();
+        if (clause != null) {
+            return cleanXML(RepositoryUtil.toXmlString(clause, Clause.class));
+        }
+
+        // Try to get Subclause
+        final Subclause subclause = odredba.getPodtacka();
+        if (subclause != null) {
+            return cleanXML(RepositoryUtil.toXmlString(subclause, Subclause.class));
+        }
+
+        // Try to get Item
+        final Item item = odredba.getAlineja();
+        if (item != null) {
+            return cleanXML(RepositoryUtil.toXmlString(item, Item.class));
+        }
+
+        return null;
+    }
+
+    private String cleanXML(String xml) {
+        return (xml.replaceAll("(xmlns:elem=\".*\")|(<\\?.*\\?>)", "")).replaceAll(" +", " ");
+    }
+
 }

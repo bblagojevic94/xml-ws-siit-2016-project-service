@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
+import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
+import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
@@ -34,6 +36,9 @@ public class LawRestController {
 
     @Autowired
     LawServiceXML service;
+
+    @Autowired
+    AmendmentsServiceXML amendmentsService;
 
     @Autowired
     Transformers transformer;
@@ -189,12 +194,15 @@ public class LawRestController {
     }
 
     @RequestMapping(
-            value = "/update",
+            value = "/update/{amendmentsId}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<Law> update() {
-        Law result = service.updateWithAmendments(null);
+    public ResponseEntity<Law> update(@PathVariable("amendmentsId") String amendmentsId) {
+
+        Amendments amendments = amendmentsService.getOneById(amendmentsId);
+
+        Law result = service.updateWithAmendments(amendments);
 
         return ResponseEntity
                 .ok()
