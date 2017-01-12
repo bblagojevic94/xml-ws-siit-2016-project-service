@@ -160,8 +160,7 @@ public class LawRestController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
 
     )
-    public ResponseEntity<?> getMetadataJSON(@RequestHeader("Accept") String mediaType) {
-        System.out.println(mediaType);
+    public ResponseEntity<?> getMetadata(@RequestHeader("Accept") String mediaType) {
         HttpHeaders headers = new HttpHeaders();
         switch (mediaType) {
             case MediaType.APPLICATION_JSON_VALUE: {
@@ -170,13 +169,12 @@ public class LawRestController {
                 return new ResponseEntity<>(result, headers, HttpStatus.OK);
             }
             case MediaType.APPLICATION_XML_VALUE: {
-                // TODO : change handling xml result
-                StreamResult result = service.getMetadataTriples();
+                String result = service.getMetadataTriples();
                 headers.setContentType(MediaType.APPLICATION_XML);
                 return new ResponseEntity<>(result, headers, HttpStatus.OK);
             }
             default:
-                return new ResponseEntity<>("Need Accept header", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
         }
     }
 

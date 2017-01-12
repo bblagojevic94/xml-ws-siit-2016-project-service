@@ -33,10 +33,12 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.OutputStream;
+import java.io.StringWriter;
 
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.transformTriples;
 
 @Component
 public class LawRepositoryXML {
@@ -220,7 +222,7 @@ public class LawRepositoryXML {
         return resultsHandle.get().path("results").path("bindings");
     }
 
-    public StreamResult getMetadataTriples() {
+    public String getMetadataTriples() {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
         String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
@@ -231,33 +233,11 @@ public class LawRepositoryXML {
 
         DOMHandle resultsHandle = new DOMHandle();
         resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-        StreamResult results = transform(resultsHandle.get(), System.out);
-        return results;
+
+        StringWriter writer = new StringWriter();
+        transformTriples(resultsHandle.get(), writer);
+        return writer.getBuffer().toString();
     }
-
-    public static StreamResult transform(Node node, OutputStream out) {
-        try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-
-            transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-            DOMSource source = new DOMSource(node);
-
-            StreamResult result = new StreamResult(out);
-            transformer.transform(source, result);
-
-            return result;
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerFactoryConfigurationError e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     //FIXME Refactor and move to some Util class
     private String makeXPath(String ref) {
