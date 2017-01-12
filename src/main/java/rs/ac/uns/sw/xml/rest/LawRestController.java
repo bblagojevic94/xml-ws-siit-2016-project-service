@@ -1,6 +1,7 @@
 package rs.ac.uns.sw.xml.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.marklogic.client.semantics.RDFMimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;

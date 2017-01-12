@@ -32,12 +32,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.readMetaData;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.transformTriples;
 
 @Component
@@ -238,6 +240,7 @@ public class LawRepositoryXML {
         transformTriples(resultsHandle.get(), writer);
         return writer.getBuffer().toString();
     }
+
 
     //FIXME Refactor and move to some Util class
     private String makeXPath(String ref) {
