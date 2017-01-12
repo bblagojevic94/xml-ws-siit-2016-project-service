@@ -60,30 +60,30 @@
         <p style="font-size: 11pt; text-align: justify">
             <xsl:value-of select="current()"/>
         </p>
-        <xsl:apply-templates select="elem:tacka"/>
-    </xsl:template>
-
-    <xsl:template match="elem:tacka">
-        <ol>
-            <li style="font-size: 11pt; text-align: justify">
-                <xsl:value-of select="current()"/>
-
-                <xsl:apply-templates select="elem:podtacka"/>
-            </li>
-        </ol>
-    </xsl:template>
-
-    <xsl:template match="elem:podtacka">
-        <ol class="podtacka">
-            <li style="font-size: 11pt; text-align: justify">
-                <xsl:value-of select="current()"/>
-            </li>
-        </ol>
-        <xsl:apply-templates select="elem:tacka"/>
+        <xsl:if test="elem:tacka">
+            <ol>
+                <xsl:for-each select="elem:tacka">
+                    <li style="font-size: 11pt; text-align: justify">
+                        <xsl:value-of select="current()"/>
+                        <xsl:if test="elem:podtacka">
+                            <ol class="podtacka">
+                                <xsl:for-each select="elem:podtacka">
+                                    <li style="font-size: 11pt; text-align: justify">
+                                        <xsl:value-of select="current()"/>
+                                        <xsl:apply-templates select="elem:alineja"/>
+                                    </li>
+                                </xsl:for-each>
+                            </ol>
+                        </xsl:if>
+                        <xsl:apply-templates select="elem:alineja"/>
+                    </li>
+                </xsl:for-each>
+            </ol>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="elem:alineja">
-        <p>
+        <p style="margin-left: 5em;">
             - <xsl:value-of select="current()"/>
         </p>
     </xsl:template>

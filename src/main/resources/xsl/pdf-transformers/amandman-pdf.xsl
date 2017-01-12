@@ -147,7 +147,7 @@
     </xsl:template>
 
     <xsl:template match="elem:alineja">
-        <fo:block font-family="Arial" font-size="10t" text-align="justify" start-indent="0.6in">
+        <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.6in">
             - <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
