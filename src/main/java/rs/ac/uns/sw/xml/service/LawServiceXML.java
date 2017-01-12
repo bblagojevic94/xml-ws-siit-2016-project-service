@@ -45,7 +45,7 @@ public class LawServiceXML {
         return repositoryXML.getMetadataJSON();
     }
 
-    public StreamResult getMetadataTriples() {
+    public String getMetadataTriples() {
         return repositoryXML.getMetadataTriples();
     }
 }

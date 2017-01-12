@@ -126,7 +126,7 @@ public class RDFExtractorUtil {
 
         System.out.println(tuples);
         StringBuilder builder = new StringBuilder();
-        for ( JsonNode row : tuples ) {
+        for (JsonNode row : tuples) {
             System.out.println(row);
             String subject = row.path("s").path("value").asText();
             String predicate = row.path("p").path("value").asText();
@@ -139,4 +139,24 @@ public class RDFExtractorUtil {
 
         return list;
     }
+
+    public static void transformTriples(Node node, StringWriter out) {
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            DOMSource source = new DOMSource(node);
+
+            StreamResult result = new StreamResult(out);
+            transformer.transform(source, result);
+
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
