@@ -23,6 +23,7 @@ import static rs.ac.uns.sw.xml.config.MarkLogicConstants.Prefixes.USERS_PREF;
 @Component
 public class UserRepositoryXML {
 
+    public static final String USERNAME = "korisnicko_ime";
     @Autowired
     XMLDocumentManager documentManager;
 
@@ -62,7 +63,7 @@ public class UserRepositoryXML {
                 qb.collection("/api_users.xml"),
 
                 // search by element with elementName=email, namespace=http://www.parlament.gov.rs/schema/korisnici, prefix=kor
-                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, "korisnicko_ime", USERS_PREF)), username)
+                qb.word(qb.element(new QName(MarkLogicConstants.Namespaces.USERS, USERNAME, USERS_PREF)), username)
         );
 
         DocumentPage page = documentManager.search(query, 1);

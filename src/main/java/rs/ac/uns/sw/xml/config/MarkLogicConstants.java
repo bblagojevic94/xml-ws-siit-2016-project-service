@@ -9,12 +9,13 @@ public final class MarkLogicConstants {
     }
 
     public final class Namespaces {
-        public static final String PREDICATE    = "http://www.parlament.gov.rs/rdf_schema/skupstina#";
-        public static final String AMENDMENTS   = "http://www.parlament.gov.rs/schema/amandman";
-        public static final String LAWS         = "http://www.parlament.gov.rs/schema/propis";
-        public static final String ELEMENTS     = "http://www.parlament.gov.rs/schema/elementi";
-        public static final String USERS        = "http://www.parlament.gov.rs/schema/korisnici";
-        public static final String SCHEMA       = "http://www.w3.org/2001/XMLSchema#";
+        public static final String PREDICATE        = "http://www.parlament.gov.rs/rdf_schema/skupstina#";
+        public static final String AMENDMENTS       = "http://www.parlament.gov.rs/schema/amandman";
+        public static final String LAWS             = "http://www.parlament.gov.rs/schema/propis";
+        public static final String ELEMENTS         = "http://www.parlament.gov.rs/schema/elementi";
+        public static final String USERS            = "http://www.parlament.gov.rs/schema/korisnici";
+        public static final String SCHEMA           = "http://www.w3.org/2001/XMLSchema#";
+        public static final String XPATH_FUNCTIONS  = "http://www.w3.org/2005/xpath-functions";
     }
 
     public final class Prefixes {
@@ -24,6 +25,7 @@ public final class MarkLogicConstants {
         public static final String ELEMENTS_PREF    = "elem";
         public static final String USERS_PREF       = "kor";
         public static final String SCHEMA_PREF      = "xs";
+        public static final String XPATH_FUN_PREF   = "fn";
     }
 
 }
