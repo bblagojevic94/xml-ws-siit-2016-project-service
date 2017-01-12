@@ -73,7 +73,7 @@
             <xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
         </fo:block>
         <fo:block>
-            <xsl:apply-templates select="elem:podtacka"/>
+            <xsl:apply-templates/>
         </fo:block>
     </xsl:template>
 
@@ -84,12 +84,12 @@
             (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
         </fo:block>
         <fo:block>
-            <xsl:apply-templates select="elem:alineja"/>
+            <xsl:apply-templates/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="elem:alineja">
-        <fo:block>
+        <fo:block font-family="Arial" font-size="10t" text-align="justify" start-indent="0.6in">
             - <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>

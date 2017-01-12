@@ -5,6 +5,22 @@
                 xmlns:aman="http://www.parlament.gov.rs/schema/amandman"
                 xmlns:elem="http://www.parlament.gov.rs/schema/elementi">
 
+    <!-- Reading data from head -->
+    <xsl:template match="aman:amandmani/aman:head">
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Datum prijedloga:</fo:inline>
+            <xsl:value-of select="aman:datum_predloga"/>
+        </fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Datum izglasavanja:</fo:inline>
+            <xsl:value-of select="aman:datum_izglasavanja"/>
+        </fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Mjesto:</fo:inline>
+            <xsl:value-of select="aman:mjesto"/>
+        </fo:block>
+    </xsl:template>
+
     <xsl:template match="aman:amandmani/aman:body">
         <fo:block>
             <xsl:apply-templates/>
@@ -12,14 +28,17 @@
     </xsl:template>
 
     <xsl:template match="aman:pravni_osnov">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
-            Pravni osnov
+        <fo:block font-family="Arial" text-align="center" font-size="12pt">
+            PRAVNI OSNOV
         </fo:block>
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="aman:amandman/aman:head">
-        <!-- Ne prikazuj vrijednosti iz aman:head-a -->
+    <!-- Write head to new amendment -->
+    <xsl:template match="aman:amandmani/aman:body/aman:amandman/aman:head">
+        <fo:block font-family="Arial" text-align="center" font-size="12pt" margin-top="16px">
+            AMANDMAN ZA DOPUNU ZAKONA
+        </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:amandman/aman:body">
@@ -27,52 +46,54 @@
     </xsl:template>
 
     <xsl:template match="aman:odredba">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
+        <fo:block font-family="Arial" font-weight="bold" font-size="11pt">
             Odredba
         </fo:block>
-        <xsl:apply-templates/>
+        <fo:block font-family="Arial" font-size="10pt">
+            <xsl:apply-templates/>
+        </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:obrazlozenje">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
-            Obrazloženje
+        <fo:block font-family="Arial" font-weight="bold" font-size="14pt" text-align="center">
+            O b r a z l o ž e n j e
         </fo:block>
         <xsl:apply-templates/>
     </xsl:template>
 
     <!-- Elementi za obrazlozenje amandmana -->
     <xsl:template match="aman:razlog">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
-            Razlog podnošenja amandmana
+        <fo:block font-family="Arial" font-weight="bold" font-size="11pt" margin-top="8px">
+            I. Razlog podnošenja amandmana
         </fo:block>
-        <fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
             <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:objasnjene_predlozenog_rjesenja">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
-            Objašnjenje predloženog rješenja
+        <fo:block font-family="Arial" font-weight="bold" font-size="11pt" margin-top="8px">
+            II. Objašnjenje predloženog rješenja
         </fo:block>
-        <fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
             <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:cilj">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
-            Cilj
+        <fo:block font-family="Arial" font-weight="bold" font-size="11pt" margin-top="8px">
+            III. Cilj
         </fo:block>
-        <fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
             <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="aman:uticaj_na_budzetska_sredstva">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
-            Uticaj na budžetska sredstva
+        <fo:block font-family="Arial" font-weight="bold" font-size="11pt" margin-top="8px">
+            IV. Uticaj na budžetska sredstva
         </fo:block>
-        <fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
             <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
@@ -81,10 +102,10 @@
     <xsl:template match="elem:clan">
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="12pt">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="10pt">
             <xsl:value-of select="@name"/>
         </fo:block>
-        <fo:block linefeed-treatment="preserve" font-family="Arial" font-style="italic" text-align="center" font-size="12pt">
+        <fo:block linefeed-treatment="preserve" font-family="Arial" font-style="italic" text-align="center" font-size="10pt">
             Član <xsl:number format="1." level="any" count="elem:clan"/>
         </fo:block>
         <fo:block>
@@ -95,7 +116,7 @@
     <xsl:template match="elem:stav">
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-        <fo:block font-family="Arial" font-size="11pt" text-align="justify">
+        <fo:block font-family="Arial" font-size="10pt" text-align="justify">
             <xsl:value-of select="current()"/>
         </fo:block>
         <fo:block>
@@ -110,18 +131,24 @@
             <xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
         </fo:block>
         <fo:block>
-            <xsl:apply-templates select="elem:podtacka"/>
+            <xsl:apply-templates/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="elem:podtacka">
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-        <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
+        <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.4in">
             (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
         </fo:block>
         <fo:block>
-            <xsl:apply-templates select="elem:alineja"/>
+            <xsl:apply-templates/>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template match="elem:alineja">
+        <fo:block font-family="Arial" font-size="10t" text-align="justify" start-indent="0.6in">
+            - <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
 
@@ -161,7 +188,7 @@
 
                 <fo:flow flow-name="amendments-body">
                     <fo:block>
-                        <xsl:apply-templates select="aman:amandmani/aman:body"/>
+                        <xsl:apply-templates/>
                     </fo:block>
                 </fo:flow>
             </fo:page-sequence>
