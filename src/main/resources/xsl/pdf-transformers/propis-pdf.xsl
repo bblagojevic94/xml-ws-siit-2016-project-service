@@ -2,17 +2,32 @@
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
-                xmlns:prop="http://www.parlament.gov.rs/schema/propis"
+                xmlns:propis="http://www.parlament.gov.rs/schema/propis"
                 xmlns:elem="http://www.parlament.gov.rs/schema/elementi">
 
-    <xsl:template match="prop:propis/prop:body">
+    <xsl:template match="propis:propis/propis:head">
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Datum prijedloga: </fo:inline>
+            <xsl:value-of select="propis:datum_predloga"/>
+        </fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Datum izglasavanja: </fo:inline>
+            <xsl:value-of select="propis:datum_izglasavanja"/>
+        </fo:block>
+        <fo:block font-family="Arial" font-size="10pt">
+            <fo:inline font-weight="bold">Mjesto: </fo:inline>
+            <xsl:value-of select="propis:mjesto"/>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template match="propis:propis/propis:body">
         <fo:block>
             <xsl:apply-templates/>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="elem:dio">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="18pt" margin-top="16pt">
             <xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyzčćžđš', 'ABCDEFGHIJKLMNOPQRSTUVWXYZČĆŽĐŠ')"/>
         </fo:block>
         <fo:block>
@@ -21,7 +36,7 @@
     </xsl:template>
 
     <xsl:template match="elem:glava">
-        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="16pt">
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="16pt" margin-top="14pt">
             <xsl:number format="I" value="position()"></xsl:number>.
             <xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyzčćžđš', 'ABCDEFGHIJKLMNOPQRSTUVWXYZČĆŽĐŠ')"/>
         </fo:block>
@@ -60,36 +75,29 @@
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="11pt" text-align="justify">
             <xsl:value-of select="current()"/>
-        </fo:block>
-        <fo:block>
-            <xsl:apply-templates select="elem:tacka"/>
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="elem:tacka">
-        <!-- New Line -->
-        <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-        <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.2in">
-            <xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
-        </fo:block>
-        <fo:block>
-            <xsl:apply-templates/>
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="elem:podtacka">
-        <!-- New Line -->
-        <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-        <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
-            (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
-        </fo:block>
-        <fo:block>
-            <xsl:apply-templates/>
+            <xsl:if test="elem:tacka">
+                <xsl:for-each select="elem:tacka">
+                    <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
+                    <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.2in">
+                        <xsl:value-of select="position()"/>. <xsl:value-of select="current()"/>
+                        <!-- All subcaluses -->
+                        <xsl:if test="elem:podtacka">
+                            <xsl:for-each select="elem:podtacka">
+                                <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
+                                    (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
+                                </fo:block>
+                                <xsl:apply-templates select="elem:alineja"/>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </fo:block>
+                    <xsl:apply-templates select="elem:alineja"/>
+                </xsl:for-each>
+            </xsl:if>
         </fo:block>
     </xsl:template>
 
     <xsl:template match="elem:alineja">
-        <fo:block font-family="Arial" font-size="10t" text-align="justify" start-indent="0.6in">
+        <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.6in">
             - <xsl:value-of select="current()"/>
         </fo:block>
     </xsl:template>
@@ -130,7 +138,7 @@
 
                 <fo:flow flow-name="law-body">
                     <fo:block>
-                        <xsl:apply-templates select="prop:propis/prop:body"/>
+                        <xsl:apply-templates/>
                     </fo:block>
                 </fo:flow>
             </fo:page-sequence>
