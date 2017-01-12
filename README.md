@@ -67,3 +67,15 @@ Za polje ***Server Name*** odabrati **xmlDBServer**, a za ***Port*** podesiti **
 | amandman       | Amendment     |
 | amandmani      | Amendments    |
 | obrazlozenje   | Explanation   |
+
+
+# Smjernice pisanja **ref** atributa iz klijenta
+###_Preface_
+Generalna ideja je da iz __amandmana__ imamo referencu na __zakone__. Kako idu ti zakoni? U amandmanu će se 
+pojavljivati link koji gađa na naš URL - __localhost:9000/api/laws/XXX#YYY__ gdje __XXX__ predstavlja __ID zakona__, a __YYY__ ID konkretnog elementa.
+Ovo implicira da:
+- referenciranje na neki zakon/član/stav (bilo šta) iz amandmana mora biti __apsolutna putanja__ (dakle, počinje se od __ID zakona__)
+- za ovo referenciranje meni generalno nije bitno šta je u sredini - bitno je da je na početku __ID zakona__, a na kraju __ID elementa__.
+- iz ovoga slijedi da bi prilikom pisanja __zakona__ bilo poželjno za svaki element generisati jedinstven id da bismo se u __XHTML__-u mogli pozicionirati na njega.
+- ovo još nije odrađeno u .pdf-u. 
+- za pisanje referenici prilikom __PATCHING__-a koristiti __relativne putanje__ u odnosu na _propis:body_ (ne uključivati _propis:body_ u putanju :smile: )
