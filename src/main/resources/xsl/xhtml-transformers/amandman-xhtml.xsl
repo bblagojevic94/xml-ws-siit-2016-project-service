@@ -71,22 +71,30 @@
     <!-- Elementi za obrazlozenje amandmana -->
     <xsl:template match="aman:razlog">
         <h5 style="font-weight: bold;font-size: 11pt">I. Razlog podnošenja amandmana</h5>
-        <p style="margin-top: -8px;"><xsl:value-of select="current()"/></p>
+        <p style="margin-top: -8px;">
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <xsl:template match="aman:objasnjene_predlozenog_rjesenja">
         <h5 style="font-weight: bold; font-size: 11pt">II. Objašnjenje predloženog rješenja</h5>
-        <p style="margin-top: -8px;"><xsl:value-of select="current()"/></p>
+        <p style="margin-top: -8px;">
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <xsl:template match="aman:cilj">
         <h5 style="font-weight: bold; font-size: 11pt">III. Cilj</h5>
-        <p style="margin-top: -8px;"><xsl:value-of select="current()"/></p>
+        <p style="margin-top: -8px;">
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <xsl:template match="aman:uticaj_na_budzetska_sredstva">
         <h5 style="font-weight: bold; font-size: 11pt">IV. Uticaj na budžetska sredstva</h5>
-        <p style="margin-top: -8px;"><xsl:value-of select="current()"/></p>
+        <p style="margin-top: -8px;">
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <!-- Elementi koji se mogu naci u odredbi amandmana -->
@@ -132,6 +140,69 @@
                 - <xsl:value-of select="current()"/>
             </li>
         </ul>
+    </xsl:template>
+
+    <!-- Override mixed content with link in XHTML -->
+
+    <!-- FIXME Add id's references -->
+    <!-- Razlog -->
+    <xsl:template match="aman:razlog//*">
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="aman:razlog//elem:ref">
+        <a>
+            <xsl:attribute name="href">http://localhost:9000/api/laws/<xsl:value-of select="substring-before(current()/@id, '/')"/></xsl:attribute>
+            <xsl:apply-templates/>
+        </a>
+    </xsl:template>
+
+    <!-- Objasnjenje -->
+    <xsl:template match="aman:objasnjene_predlozenog_rjesenja//*">
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="aman:objasnjene_predlozenog_rjesenja//elem:ref">
+        <a>
+            <xsl:attribute name="href">http://localhost:9000/api/laws/<xsl:value-of select="substring-before(current()/@id, '/')"/></xsl:attribute>
+            <xsl:apply-templates/>
+        </a>
+    </xsl:template>
+
+    <!-- Cilj -->
+    <xsl:template match="aman:cilj//*">
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="aman:cilj//elem:ref">
+        <a>
+            <xsl:attribute name="href">http://localhost:9000/api/laws/<xsl:value-of select="substring-before(current()/@id, '/')"/></xsl:attribute>
+            <xsl:apply-templates/>
+        </a>
+    </xsl:template>
+
+    <!-- Uticaj na budzetska sredstva -->
+    <xsl:template match="aman:uticaj_na_budzetska_sredstva//*">
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="aman:uticaj_na_budzetska_sredstva//elem:ref">
+        <a>
+            <xsl:attribute name="href">http://localhost:9000/api/laws/<xsl:value-of select="substring-before(current()/@id, '/')"/></xsl:attribute>
+            <xsl:apply-templates/>
+        </a>
     </xsl:template>
 
 </xsl:stylesheet>
