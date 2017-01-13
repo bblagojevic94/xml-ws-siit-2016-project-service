@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.repository.LawRepositoryXML;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
-
-import javax.xml.transform.stream.StreamResult;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 @Service
 public class LawServiceXML {
@@ -23,6 +21,14 @@ public class LawServiceXML {
 
     public Law updateWithAmendments(Amendments amendments) {
         return repositoryXML.updateLawWithAmendments(amendments);
+    }
+
+    public void deleteLawById(String id) {
+        repositoryXML.deleteLaw(id);
+    }
+
+    public Law updateLawStatus(String id, String status) {
+        return repositoryXML.updateLawStatus(id, status);
     }
 
     public SearchResult getAll() {

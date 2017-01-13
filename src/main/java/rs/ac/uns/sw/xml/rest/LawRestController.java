@@ -1,7 +1,6 @@
 package rs.ac.uns.sw.xml.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.marklogic.client.semantics.RDFMimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,7 +23,6 @@ import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -202,6 +200,32 @@ public class LawRestController {
         Amendments amendments = amendmentsService.getOneById(amendmentsId);
 
         Law result = service.updateWithAmendments(amendments);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
+
+    @RequestMapping(
+            value = "/{id}",
+            method = RequestMethod.DELETE
+    )
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+
+        service.deleteLawById(id);
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @RequestMapping(
+            value = "/{id}/{status}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Law> updateByStatus(@PathVariable("id") String id, @PathVariable("status") String status) {
+        final Law result = service.updateLawStatus(id, status);
 
         return ResponseEntity
                 .ok()
