@@ -98,4 +98,30 @@ public class AmendmentsRestController {
                 .ok()
                 .body(transformer.toHtml(RepositoryUtil.toXmlString(result, Amendments.class)));
     }
+
+    @RequestMapping(
+            value = "/{id}",
+            method = RequestMethod.DELETE
+    )
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+
+        service.deleteAmendmentsById(id);
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @RequestMapping(
+            value = "/{id}/{status}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Amendments> updateByStatus(@PathVariable("id") String id, @PathVariable("status") String status) {
+        final Amendments result = service.updateAmendmentsStatus(id, status);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
 }

@@ -20,6 +20,14 @@ public class AmendmentsServiceXML {
 
     public List<String> findByProposer(String proposer) { return repositoryXML.findAmendmentsByProposer(proposer);}
 
+    public void deleteAmendmentsById(String id) {
+        repositoryXML.deleteAmendments(id);
+    }
+
+    public Amendments updateAmendmentsStatus(String id, String status) {
+        return repositoryXML.updateAmendmentsStatus(id, status);
+    }
+
     public Amendments getOneById(String id) {
         return repositoryXML.findAmendmentById(id);
     }

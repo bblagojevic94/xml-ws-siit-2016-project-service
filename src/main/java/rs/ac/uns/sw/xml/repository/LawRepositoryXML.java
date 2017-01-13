@@ -123,11 +123,31 @@ public class LawRepositoryXML {
         return findLawById(lawId);
     }
 
+    public Law updateLawStatus(String id, String status) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String lawStatusXPath = "propis:propis/propis:head/propis:status";
+
+        patchBuilder.replaceFragment(lawStatusXPath, status);
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id), patchHandle);
+
+        return findLawById(id);
+    }
+
     public Law findLawById(String id) {
         JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Law.class);
         JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
 
         return (Law) result.get(Law.class);
+    }
+
+    public void deleteLaw(String id) {
+        documentManager.delete(getDocumentId(id));
+
+        databaseClient.release();
     }
 
     public SearchResult findAll() {
