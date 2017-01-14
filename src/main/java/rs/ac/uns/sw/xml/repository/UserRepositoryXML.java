@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.repository;
 
 
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.DocumentPage;
 import com.marklogic.client.document.DocumentRecord;
 import com.marklogic.client.document.XMLDocumentManager;
@@ -42,11 +43,22 @@ public class UserRepositoryXML {
         return findById(document.getId());
     }
 
-    public AppUser findById(Long id) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(AppUser.class);
-        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+    public boolean userExists(Long id) {
+        DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
+        if (descriptor != null) {
+            return true;
+        }
+        return false;
+    }
 
-        return (AppUser) result.get(AppUser.class);
+    public AppUser findById(Long id) {
+        if (userExists(id)) {
+            JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(AppUser.class);
+            JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+
+            return (AppUser) result.get(AppUser.class);
+        }
+        return null;
     }
 
     public AppUser findOneByUsername(String username) {

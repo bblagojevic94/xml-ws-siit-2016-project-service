@@ -1,7 +1,6 @@
 package rs.ac.uns.sw.xml.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.marklogic.client.semantics.RDFMimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,24 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
-import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
-import rs.ac.uns.sw.xml.util.RepositoryUtil;
-import rs.ac.uns.sw.xml.util.Transformers;
+import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
+import rs.ac.uns.sw.xml.states.StateContext;
+import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
+
 
 @RestController
 @RequestMapping("/api/laws")
@@ -42,7 +40,13 @@ public class LawRestController {
     AmendmentsServiceXML amendmentsService;
 
     @Autowired
+    ParliamentServiceXML parliamentServiceXML;
+
+    @Autowired
     Transformers transformer;
+
+    @Autowired
+    StateContext stateContext;
 
     @RequestMapping(
             value = "/",
@@ -50,15 +54,18 @@ public class LawRestController {
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<Law> addLaw(@RequestBody Law law, UriComponentsBuilder builder) throws URISyntaxException {
-        final Law result = service.create(law);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(
-                builder.path("/laws/{id}.xml")
-                        .buildAndExpand(law.getId()).toUri());
-
-        return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
+    public ResponseEntity<Law> addLaw(@RequestBody Law law) throws URISyntaxException {
+        if (stateContext.getState() == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .headers(HeaderUtil.failure(
+                            Constants.EntityNames.PARLIAMENTS,
+                            HeaderUtil.ERROR_CODE_NO_ACTIVE_PARLIAMENT,
+                            HeaderUtil.ERROR_MSG_NO_ACTIVE_PARLIAMENT
+                    ))
+                    .body(null);
+        }
+        return (ResponseEntity<Law>) stateContext.getState().suggestLaw(law, stateContext.getParliament());
     }
 
     @RequestMapping(

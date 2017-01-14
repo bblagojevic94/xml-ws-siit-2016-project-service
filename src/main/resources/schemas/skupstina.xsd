@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    attributeFormDefault="qualified" targetNamespace="http://www.parlament.gov.rs/schema/skupstina"
+    xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+    <xs:import namespace="http://www.parlament.gov.rs/schema/elementi" schemaLocation="elementi.xsd"/>
+
+    <xs:element name="skupstina">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Parliament"/>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="head">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="datum_odrzavanja" type="xs:date"/>
+                            <xs:element name="mjesto_odrzavanja" type="xs:string"/>
+                            <xs:element name="broj_prisutnih" type="xs:int"/>
+                            <xs:element name="status">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="sazvana"/>
+                                        <xs:enumeration value="odložena"/>
+                                        <xs:enumeration value="u_toku"/>
+                                        <xs:enumeration value="završena"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="body">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="akti">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element maxOccurs="unbounded" ref="elem:ref"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -11,7 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Amendments;
+import rs.ac.uns.sw.xml.domain.Parliament;
 import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
+import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
+import rs.ac.uns.sw.xml.states.StateContext;
+import rs.ac.uns.sw.xml.util.Constants;
+import rs.ac.uns.sw.xml.util.HeaderUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.Transformers;
 
@@ -32,7 +37,13 @@ public class AmendmentsRestController {
     AmendmentsServiceXML service;
 
     @Autowired
+    ParliamentServiceXML parliamentServiceXML;
+
+    @Autowired
     Transformers transformer;
+
+    @Autowired
+    StateContext stateContext;
 
     @RequestMapping(
             value = "/",
@@ -40,15 +51,19 @@ public class AmendmentsRestController {
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<Amendments> addAmendment(@RequestBody Amendments amendments, UriComponentsBuilder builder) throws URISyntaxException {
-        final Amendments result = service.create(amendments);
+    public ResponseEntity<Amendments> addAmendment(@RequestBody Amendments amendments) throws URISyntaxException {
+        if (stateContext.getState() == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .headers(HeaderUtil.failure(
+                            Constants.EntityNames.PARLIAMENTS,
+                            HeaderUtil.ERROR_CODE_NO_ACTIVE_PARLIAMENT,
+                            HeaderUtil.ERROR_MSG_NO_ACTIVE_PARLIAMENT
+                    ))
+                    .body(null);
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(
-                builder.path("/amendments/{id}.xml")
-                        .buildAndExpand(amendments.getId()).toUri());
-
-        return new ResponseEntity<>(result, headers, HttpStatus.CREATED);
+        return (ResponseEntity<Amendments>) stateContext.getState().suggestAmendments(amendments, stateContext.getParliament());
     }
 
     @RequestMapping(

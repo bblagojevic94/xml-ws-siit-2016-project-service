@@ -1,6 +1,7 @@
 package rs.ac.uns.sw.xml.repository;
 
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
@@ -15,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
-import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import java.util.List;
 
@@ -51,11 +52,22 @@ public class AmendmentsRepositoryXML {
         return amendments;
     }
 
-    public Amendments findAmendmentById(String id) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
-        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+    public boolean amendmentsExists(String id) {
+        DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
+        if (descriptor != null) {
+            return true;
+        }
+        return false;
+    }
 
-        return (Amendments) result.get(Amendments.class);
+    public Amendments findAmendmentById(String id) {
+        if (amendmentsExists(id)) {
+            JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
+            JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+
+            return (Amendments) result.get(Amendments.class);
+        }
+        return null;
     }
 
     public SearchResult findAll() {
@@ -75,7 +87,7 @@ public class AmendmentsRepositoryXML {
     }
 
 
-    public List<String> findAmendmentsByProposer(String proposerName){
+    public List<String> findAmendmentsByProposer(String proposerName) {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
         SPARQLQueryDefinition query = sparqlQueryManager

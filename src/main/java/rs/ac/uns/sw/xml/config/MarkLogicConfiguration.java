@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.AppUser;
 import rs.ac.uns.sw.xml.domain.Law;
+import rs.ac.uns.sw.xml.domain.Parliament;
 
 import javax.xml.bind.JAXBException;
 
@@ -40,6 +41,7 @@ public class MarkLogicConfiguration {
             registry.register(JAXBHandle.newFactory(Law.class));
             registry.register(JAXBHandle.newFactory(AppUser.class));
             registry.register(JAXBHandle.newFactory(Amendments.class));
+            registry.register(JAXBHandle.newFactory(Parliament.class));
         }
         catch (JAXBException e) {
             e.printStackTrace();

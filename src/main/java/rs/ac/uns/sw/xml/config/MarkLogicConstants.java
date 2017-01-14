@@ -6,6 +6,7 @@ public final class MarkLogicConstants {
         public static final String LAWS  = "/laws.xml";
         public static final String USERS = "/api_users.xml";
         public static final String AMENDMENTS  = "/amendments.xml";
+        public static final String PARLIAMENTS  = "/parliaments.xml";
     }
 
     public final class Namespaces {
@@ -14,6 +15,7 @@ public final class MarkLogicConstants {
         public static final String LAWS         = "http://www.parlament.gov.rs/schema/propis";
         public static final String ELEMENTS     = "http://www.parlament.gov.rs/schema/elementi";
         public static final String USERS        = "http://www.parlament.gov.rs/schema/korisnici";
+        public static final String PARLIAMENTS  = "http://www.parlament.gov.rs/schema/skupstina";
         public static final String SCHEMA       = "http://www.w3.org/2001/XMLSchema#";
     }
 
@@ -24,6 +26,7 @@ public final class MarkLogicConstants {
         public static final String ELEMENTS_PREF    = "elem";
         public static final String USERS_PREF       = "kor";
         public static final String SCHEMA_PREF      = "xs";
+        public static final String PARLIAMENT_PREF  = "skup";
     }
 
 }
