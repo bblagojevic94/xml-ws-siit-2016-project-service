@@ -5,6 +5,7 @@
                 @javax.xml.bind.annotation.XmlNs(prefix = LAWS_PREF, namespaceURI = LAWS),
                 @javax.xml.bind.annotation.XmlNs(prefix = ELEMENTS_PREF, namespaceURI = ELEMENTS),
                 @javax.xml.bind.annotation.XmlNs(prefix = USERS_PREF,  namespaceURI = USERS),
+                @javax.xml.bind.annotation.XmlNs(prefix = PARLIAMENT_PREF,  namespaceURI = PARLIAMENTS),
                 @javax.xml.bind.annotation.XmlNs(prefix = SCHEMA_PREF,  namespaceURI = SCHEMA)
         },
         elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)

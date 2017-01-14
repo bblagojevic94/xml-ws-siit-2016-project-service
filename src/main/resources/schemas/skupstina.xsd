@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     attributeFormDefault="qualified" targetNamespace="http://www.parlament.gov.rs/schema/skupstina"
-    xmlns:elem="http://www.parlament.gov.rs/schema/elementi">
+    xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
     <xs:import namespace="http://www.parlament.gov.rs/schema/elementi" schemaLocation="elementi.xsd"/>
 
     <xs:element name="skupstina">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class name="Parliament"/>
+            </xs:appinfo>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="head">
@@ -40,6 +46,7 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+            <xs:attributeGroup ref="elem:standard_attrs"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
