@@ -2,7 +2,6 @@ package rs.ac.uns.sw.xml.rest;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -63,40 +62,44 @@ public class AmendmentsRestController {
     }
 
     @RequestMapping(
-            value = "/pdf/{name}",
+            value = "/{id}",
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
-
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                    MediaType.APPLICATION_XHTML_XML_VALUE
+            }
     )
-    public ResponseEntity<InputStreamResource> downloadAmendmentPDF(@PathVariable String name)
-            throws IOException, JAXBException, TransformerException, SAXException {
+    public ResponseEntity<?> AmendmentsById(@RequestHeader("Accept") String mediaType, @PathVariable String id)
+            throws JAXBException, TransformerException, IOException, SAXException, ParserConfigurationException {
 
-        final Amendments result = service.getOneById(name);
+        final Amendments result = service.getOneById(id);
 
-        transformer.setName(NAME);
+        HttpHeaders headers = new HttpHeaders();
+        switch (mediaType) {
+            case MediaType.APPLICATION_XML_VALUE: {
+                headers.setContentType(MediaType.APPLICATION_XML);
+                return new ResponseEntity<>(result, headers, HttpStatus.OK);
+            }
 
-        return ResponseEntity
-                .ok()
-                .header("Content-Disposition", "attachment; filename=amendment.pdf")
-                .body(transformer.toPdf(RepositoryUtil.toXmlString(result, Amendments.class)));
-    }
+            case MediaType.APPLICATION_OCTET_STREAM_VALUE: {
+                transformer.setName(NAME);
 
-    @RequestMapping(
-            value = "/html/{name}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_XHTML_XML_VALUE
+                headers.set("Content-Disposition", "attachment; filename=amendments.pdf");
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                return new ResponseEntity<>(transformer.toPdf(RepositoryUtil.toXmlString(result, Amendments.class)), headers, HttpStatus.OK);
+            }
 
-    )
-    public ResponseEntity<String> downloadAmendmentHtml(@PathVariable String name)
-            throws IOException, JAXBException, TransformerException, SAXException, ParserConfigurationException {
+            case MediaType.APPLICATION_XHTML_XML_VALUE: {
+                transformer.setName(NAME);
 
-        final Amendments result = service.getOneById(name);
+                headers.setContentType(MediaType.APPLICATION_XHTML_XML);
+                return new ResponseEntity<>(transformer.toHtml(RepositoryUtil.toXmlString(result, Amendments.class)), headers, HttpStatus.OK);
+            }
 
-        transformer.setName(NAME);
-
-        return ResponseEntity
-                .ok()
-                .body(transformer.toHtml(RepositoryUtil.toXmlString(result, Amendments.class)));
+            default:
+                return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(
