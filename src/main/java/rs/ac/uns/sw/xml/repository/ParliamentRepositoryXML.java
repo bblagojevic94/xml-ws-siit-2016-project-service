@@ -2,18 +2,14 @@ package rs.ac.uns.sw.xml.repository;
 
 
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.DocumentPatchBuilder;
+import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
-import com.marklogic.client.io.marker.DocumentPatchHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Parliament;
-import rs.ac.uns.sw.xml.domain.Ref;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
-
-import javax.xml.bind.JAXBException;
 
 @Component
 public class ParliamentRepositoryXML {
@@ -33,11 +29,22 @@ public class ParliamentRepositoryXML {
         return parliament;
     }
 
-    public Parliament findParliamentById(String id) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Parliament.class);
-        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+    public boolean parliamentExists(String id) {
+        DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
+        if (descriptor != null) {
+            return true;
+        }
+        return false;
+    }
 
-        return (Parliament) result.get(Parliament.class);
+    public Parliament findParliamentById(String id) {
+        if (parliamentExists(id)) {
+            JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Parliament.class);
+            JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+
+            return (Parliament) result.get(Parliament.class);
+        }
+        return null;
     }
 
     private String getDocumentId(String value) {

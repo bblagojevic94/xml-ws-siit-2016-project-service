@@ -17,11 +17,13 @@ public class ConvenedState implements State {
 
     private LawServiceXML lawServiceXML;
     private AmendmentsServiceXML amendmentsServiceXML;
+    private ParliamentServiceXML parliamentServiceXML;
 
 
     public ConvenedState(LawServiceXML lawServiceXML, AmendmentsServiceXML amendmentsServiceXML, ParliamentServiceXML parliamentServiceXML, Parliament parliament) {
         this.lawServiceXML = lawServiceXML;
         this.amendmentsServiceXML = amendmentsServiceXML;
+        this.parliamentServiceXML = parliamentServiceXML;
     }
 
     @Override
@@ -42,12 +44,13 @@ public class ConvenedState implements State {
         ref.setId(law.getId());
         addAgenda(ref, parliament);
 
+        parliamentServiceXML.create(parliament);
+
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> suggestAmendments(Amendments amendments, Parliament parliament) {
-
         if (amendmentsServiceXML.amendmentsExists(amendments.getId())) {
             return ResponseEntity
                     .badRequest()
@@ -59,6 +62,12 @@ public class ConvenedState implements State {
         }
 
         final Amendments result = amendmentsServiceXML.create(amendments);
+
+        Ref ref = new Ref();
+        ref.setId(amendments.getId());
+        addAgenda(ref, parliament);
+
+        parliamentServiceXML.create(parliament);
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -78,11 +87,9 @@ public class ConvenedState implements State {
         return null;
     }
 
-    private boolean addAgenda(Ref ref, Parliament parliament){
-        System.out.println(parliament.getBody().getAkti());
-
-        for (Ref r: parliament.getBody().getAkti().getRef()){
-            if (ref.getId().equals(r.getId())){
+    private boolean addAgenda(Ref ref, Parliament parliament) {
+        for (Ref r : parliament.getBody().getAkti().getRef()) {
+            if (ref.getId().equals(r.getId())) {
                 return false;
             }
         }

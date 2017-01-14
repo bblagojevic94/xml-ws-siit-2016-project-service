@@ -9,5 +9,19 @@ public class Constants {
         public static final String USERS = "users";
     }
 
+    public final class AmendmentsStates {
+        public static final String SUGGESTED = "predložen";
+        public static final String WITHDRAWN = "povučen";
+        public static final String REJECTED = "odbijen";
+        public static final String ACCEPTED = "prihvaćen";
+    }
+
+    public final class LawsStates {
+        public static final String SUGGESTED = "predložen";
+        public static final String WITHDRAWN = "povučen";
+        public static final String REJECTED = "odbijen";
+        public static final String ACCEPTED = "prihvaćen";
+    }
+
     public static final String ACTIVE_PARLIAMENT = "active_parliament";
 }

@@ -66,13 +66,12 @@ public class ParliamentRestController {
     }
 
     @RequestMapping(
-            value = "/active/",
+            value = "/",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Parliament> getActiveParliament() throws URISyntaxException {
-
-        if (!(stateContext.getState() instanceof InProgressState)) {
+        if (stateContext.getParliament() == null) {
             return ResponseEntity
                     .badRequest()
                     .headers(HeaderUtil.failure(
@@ -113,6 +112,10 @@ public class ParliamentRestController {
                             "Wrong transition from " + stateToString(stateContext.getState()) + " to " + state))
                     .body(null);
         }
+
+        stateContext.getParliament().getHead().setStatus(state);
+        // update db
+        service.create(stateContext.getParliament());
 
         Parliament result = stateContext.getParliament();
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -62,9 +62,9 @@ public class StateContext {
             case IN_PROGRESS_STATE:
                 return new InProgressState(lawServiceXML, amendmentsServiceXML);
             case FINISHED_STATE:
-                return new FinishedState(lawServiceXML, amendmentsServiceXML);
+                return new FinishedState();
             case CANCELED_STATE:
-                return new CanceledState(lawServiceXML, amendmentsServiceXML);
+                return new CanceledState();
             default:
                 return null;
         }
