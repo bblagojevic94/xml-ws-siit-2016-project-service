@@ -1,6 +1,7 @@
 package rs.ac.uns.sw.xml.repository;
 
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
@@ -51,11 +52,23 @@ public class AmendmentsRepositoryXML {
         return amendments;
     }
 
-    public Amendments findAmendmentById(String id) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
-        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
 
-        return (Amendments) result.get(Amendments.class);
+    public boolean amendmentsExists(String id) {
+        DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
+        if (descriptor != null){
+            return true;
+        }
+        return false;
+    }
+
+    public Amendments findAmendmentById(String id) {
+        if(amendmentsExists(id)) {
+            JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Amendments.class);
+            JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+
+            return (Amendments) result.get(Amendments.class);
+        }
+        return null;
     }
 
     public SearchResult findAll() {

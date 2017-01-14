@@ -14,4 +14,8 @@ public class ParliamentServiceXML {
     public Parliament create(Parliament parliament) {
         return repositoryXML.save(parliament);
     }
+
+    public Parliament findOneById(String id) {
+        return repositoryXML.findParliamentById(id);
+    }
 }

@@ -18,9 +18,15 @@ public class AmendmentsServiceXML {
         return repositoryXML.save(amendments);
     }
 
-    public List<String> findByProposer(String proposer) { return repositoryXML.findAmendmentsByProposer(proposer);}
+    public List<String> findByProposer(String proposer) {
+        return repositoryXML.findAmendmentsByProposer(proposer);
+    }
 
     public Amendments getOneById(String id) {
         return repositoryXML.findAmendmentById(id);
+    }
+
+    public boolean amendmentsExists(String id) {
+        return repositoryXML.amendmentsExists(id);
     }
 }

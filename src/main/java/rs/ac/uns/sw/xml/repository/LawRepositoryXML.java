@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.repository;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
@@ -119,11 +120,22 @@ public class LawRepositoryXML {
         return findLawById(lawId);
     }
 
-    public Law findLawById(String id) {
-        JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Law.class);
-        JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+    public boolean lawExists(String id) {
+        DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
+        if (descriptor != null){
+            return true;
+        }
+        return false;
+    }
 
-        return (Law) result.get(Law.class);
+    public Law findLawById(String id) {
+        if (lawExists(id)) {
+            JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(Law.class);
+            JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
+
+            return (Law) result.get(Law.class);
+        }
+        return null;
     }
 
     public SearchResult findAll() {
