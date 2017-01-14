@@ -19,7 +19,9 @@ import com.marklogic.client.semantics.SPARQLQueryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
-import rs.ac.uns.sw.xml.domain.*;
+import rs.ac.uns.sw.xml.domain.Amendment;
+import rs.ac.uns.sw.xml.domain.Amendments;
+import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
@@ -28,6 +30,7 @@ import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
@@ -160,12 +163,15 @@ public class LawRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
 
-        return handler.toSearchResult(result);
+        return handler.toSearchResult(result, null);
     }
 
-    public SearchResult findAllByQuery(String query) {
-
+    public SearchResult findAllByQueryAndMetadata(String query, MetaSearchWrapper searchWrapper) {
         ResultHandler handler = new ResultHandler(Law.class, documentManager);
+
+        if (query == null) {
+            return handler.toSearchResult(searchMetadata(searchWrapper));
+        }
 
         StringQueryDefinition queryDefinition = queryManager.newStringDefinition();
         queryDefinition.setCriteria(query);
@@ -174,14 +180,60 @@ public class LawRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(queryDefinition, result);
 
-        return handler.toSearchResult(result);
+
+        JsonNode properties = null;
+        try {
+            if (isMetadataSearchActive(searchWrapper))
+                properties = searchMetadata(searchWrapper);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return handler.toSearchResult(result, properties);
     }
 
-    public JsonNode searchMetadata(MetaSearchWrapper searchWrapper) {
+    public JsonNode getMetadataJSON() {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
         String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT ?law FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+        return resultsHandle.get().path(RESULTS).path(BINDINGS);
+    }
+
+    public String getMetadataTriples() {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        DOMHandle resultsHandle = new DOMHandle();
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        StringWriter writer = new StringWriter();
+        transformTriples(resultsHandle.get(), writer);
+        return writer.getBuffer().toString();
+    }
+
+    private String getDocumentId(String value) {
+        return String.format("/laws/%s.xml", value);
+    }
+
+    private JsonNode searchMetadata(MetaSearchWrapper searchWrapper) {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
                 "?law <" + VOTES_FOR + "> ?votes_for . " +
                 "?law <" + VOTES_AGAINST + "> ?votes_against . " +
                 "?law <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
@@ -228,41 +280,14 @@ public class LawRepositoryXML {
         return resultsHandle.get().path("results").path("bindings");
     }
 
-    public JsonNode getMetadataJSON() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+    private boolean isMetadataSearchActive(MetaSearchWrapper obj) throws IllegalAccessException {
+        for (Field f : obj.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.get(obj) != null) {
+                return true;
+            }
+        }
 
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        JacksonHandle resultsHandle = new JacksonHandle();
-        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
-
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-        return resultsHandle.get().path(RESULTS).path(BINDINGS);
+        return false;
     }
-
-    public String getMetadataTriples() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        DOMHandle resultsHandle = new DOMHandle();
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-
-        StringWriter writer = new StringWriter();
-        transformTriples(resultsHandle.get(), writer);
-        return writer.getBuffer().toString();
-    }
-
-    private String getDocumentId(String value) {
-        return String.format("/laws/%s.xml", value);
-    }
-
 }

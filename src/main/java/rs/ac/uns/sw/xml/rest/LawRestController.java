@@ -111,41 +111,6 @@ public class LawRestController {
     }
 
     @RequestMapping(
-            value = "/search/metadata",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<JsonNode> searchLawsByVotes(
-            @RequestParam(value = "startVotesFor", required = false) Integer startVotesFor,
-            @RequestParam(value = "endVotesFor", required = false) Integer endVotesFor,
-            @RequestParam(value = "startVotesAgainst", required = false) Integer startVotesAgainst,
-            @RequestParam(value = "endVotesAgainst", required = false) Integer endVotesAgainst,
-            @RequestParam(value = "startVotesNeutral", required = false) Integer startVotesNeutral,
-            @RequestParam(value = "endVotesNeutral", required = false) Integer endVotesNeutral,
-            @RequestParam(value = "startDateOfProposal", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDateOfProposal,
-            @RequestParam(value = "endDateOfProposal", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDateOfProposal,
-            @RequestParam(value = "startDateOfVoting", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDateOfVoting,
-            @RequestParam(value = "endDateOfVoting", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDateOfVoting,
-            @RequestParam(value = "status", required = false) String status
-    ) throws URISyntaxException {
-        MetaSearchWrapper wrapper = new MetaSearchWrapper()
-                .startVotesFor(startVotesFor)
-                .endVotesFor(endVotesFor)
-                .startVotesAgainst(startVotesAgainst)
-                .endVotesAgainst(endVotesAgainst)
-                .startVotesNeutral(startVotesNeutral)
-                .endVotesNeutral(endVotesNeutral)
-                .startDateOfProposal(startDateOfProposal)
-                .endDateOfProposal(endDateOfProposal)
-                .startDateOfVoting(startDateOfVoting)
-                .endDateOfVoting(endDateOfVoting)
-                .status(status);
-
-        final JsonNode result = service.searchLaws(wrapper);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @RequestMapping(
             value = "/metadata/",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
@@ -173,9 +138,35 @@ public class LawRestController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<SearchResult> searchLaws(@RequestParam("query") String query) {
+    public ResponseEntity<SearchResult> searchLaws(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "startVotesFor", required = false) Integer startVotesFor,
+            @RequestParam(value = "endVotesFor", required = false) Integer endVotesFor,
+            @RequestParam(value = "startVotesAgainst", required = false) Integer startVotesAgainst,
+            @RequestParam(value = "endVotesAgainst", required = false) Integer endVotesAgainst,
+            @RequestParam(value = "startVotesNeutral", required = false) Integer startVotesNeutral,
+            @RequestParam(value = "endVotesNeutral", required = false) Integer endVotesNeutral,
+            @RequestParam(value = "startDateOfProposal", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDateOfProposal,
+            @RequestParam(value = "endDateOfProposal", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDateOfProposal,
+            @RequestParam(value = "startDateOfVoting", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDateOfVoting,
+            @RequestParam(value = "endDateOfVoting", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDateOfVoting,
+            @RequestParam(value = "status", required = false) String status
+    ) throws URISyntaxException {
 
-        final SearchResult result = service.getAllByQuery(query);
+        MetaSearchWrapper wrapper = new MetaSearchWrapper()
+                .startVotesFor(startVotesFor)
+                .endVotesFor(endVotesFor)
+                .startVotesAgainst(startVotesAgainst)
+                .endVotesAgainst(endVotesAgainst)
+                .startVotesNeutral(startVotesNeutral)
+                .endVotesNeutral(endVotesNeutral)
+                .startDateOfProposal(startDateOfProposal)
+                .endDateOfProposal(endDateOfProposal)
+                .startDateOfVoting(startDateOfVoting)
+                .endDateOfVoting(endDateOfVoting)
+                .status(status);
+
+        final SearchResult result = service.getAllByQueryAndMetadata(query, wrapper);
 
         return ResponseEntity
                 .ok()

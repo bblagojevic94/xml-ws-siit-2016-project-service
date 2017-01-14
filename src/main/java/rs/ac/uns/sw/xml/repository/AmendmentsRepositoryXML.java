@@ -70,7 +70,7 @@ public class AmendmentsRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
 
-        return handler.toSearchResult(result);
+        return handler.toSearchResult(result, null);
     }
 
     public void deleteAmendments(String id) {
