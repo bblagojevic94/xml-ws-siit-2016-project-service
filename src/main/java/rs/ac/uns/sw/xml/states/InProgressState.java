@@ -1,15 +1,19 @@
 package rs.ac.uns.sw.xml.states;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.Parliament;
 import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
+import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.StateConstants;
 
 import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
+import static rs.ac.uns.sw.xml.util.StatesUtil.addAgenda;
+import static rs.ac.uns.sw.xml.util.StatesUtil.removeAgenda;
 
 public class InProgressState implements State {
 
@@ -32,12 +36,20 @@ public class InProgressState implements State {
     }
 
     @Override
-    public ResponseEntity<?> withdrawalLaw(Law law) {
+    public ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament) {
+        if (Constants.LawsStates.ACCEPTED.equals(status) || Constants.LawsStates.REJECTED.equals(status)) {
+            final Law result = lawServiceXML.updateLawStatus(id, status);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
         return forbiddenActionFromState(StateConstants.ParliamentStates.IN_PROGRESS_STATE);
     }
 
     @Override
-    public ResponseEntity<?> withdrawalAmendments(Amendments amendments) {
+    public ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament) {
+        if (Constants.AmendmentsStates.ACCEPTED.equals(status) || Constants.AmendmentsStates.REJECTED.equals(status)) {
+            final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
         return forbiddenActionFromState(StateConstants.ParliamentStates.IN_PROGRESS_STATE);
     }
 

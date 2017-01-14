@@ -203,6 +203,9 @@ public class LawRestController {
             method = RequestMethod.DELETE
     )
     public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        if (!service.lawExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         service.deleteLawById(id);
 
@@ -217,10 +220,10 @@ public class LawRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Law> updateByStatus(@PathVariable("id") String id, @PathVariable("status") String status) {
-        final Law result = service.updateLawStatus(id, status);
+        if (!service.lawExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
-        return ResponseEntity
-                .ok()
-                .body(result);
+        return (ResponseEntity<Law>) stateContext.getState().updateLawStatus(id, status, stateContext.getParliament());
     }
 }

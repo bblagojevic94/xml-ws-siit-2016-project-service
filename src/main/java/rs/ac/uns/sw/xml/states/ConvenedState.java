@@ -11,6 +11,11 @@ import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
 import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.HeaderUtil;
+import rs.ac.uns.sw.xml.util.StateConstants;
+
+import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
+import static rs.ac.uns.sw.xml.util.StatesUtil.addAgenda;
+import static rs.ac.uns.sw.xml.util.StatesUtil.removeAgenda;
 
 
 public class ConvenedState implements State {
@@ -40,9 +45,7 @@ public class ConvenedState implements State {
 
         final Law result = lawServiceXML.create(law);
 
-        Ref ref = new Ref();
-        ref.setId(law.getId());
-        addAgenda(ref, parliament);
+        addAgenda(law.getId(), parliament);
 
         parliamentServiceXML.create(parliament);
 
@@ -65,7 +68,7 @@ public class ConvenedState implements State {
 
         Ref ref = new Ref();
         ref.setId(amendments.getId());
-        addAgenda(ref, parliament);
+        addAgenda(amendments.getId(), parliament);
 
         parliamentServiceXML.create(parliament);
 
@@ -73,13 +76,43 @@ public class ConvenedState implements State {
     }
 
     @Override
-    public ResponseEntity<?> withdrawalLaw(Law law) {
-        return null;
+    public ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament) {
+        if (Constants.LawsStates.WITHDRAWN.equals(status)) {
+            final Law result = lawServiceXML.updateLawStatus(id, status);
+            removeAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if (Constants.LawsStates.SUGGESTED.equals(status)) {
+            final Law result = lawServiceXML.updateLawStatus(id, status);
+            addAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
     }
 
     @Override
-    public ResponseEntity<?> withdrawalAmendments(Amendments amendments) {
-        return null;
+    public ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament) {
+        if (Constants.AmendmentsStates.WITHDRAWN.equals(status)) {
+            final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
+            removeAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if (Constants.AmendmentsStates.SUGGESTED.equals(status)) {
+            final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
+            addAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
     }
 
     @Override
@@ -87,14 +120,5 @@ public class ConvenedState implements State {
         return null;
     }
 
-    private boolean addAgenda(Ref ref, Parliament parliament) {
-        for (Ref r : parliament.getBody().getAkti().getRef()) {
-            if (ref.getId().equals(r.getId())) {
-                return false;
-            }
-        }
 
-        parliament.getBody().getAkti().getRef().add(ref);
-        return true;
-    }
 }

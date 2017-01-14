@@ -12,9 +12,9 @@ public interface State {
 
     ResponseEntity<?> suggestAmendments(Amendments amendments, Parliament parliament);
 
-    ResponseEntity<?> withdrawalLaw(Law law);
+    ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament);
 
-    ResponseEntity<?> withdrawalAmendments(Amendments amendments);
+    ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament);
 
     ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral);
 }

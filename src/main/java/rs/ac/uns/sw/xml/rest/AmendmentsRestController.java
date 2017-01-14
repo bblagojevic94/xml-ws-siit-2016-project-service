@@ -122,6 +122,9 @@ public class AmendmentsRestController {
             method = RequestMethod.DELETE
     )
     public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        if (!service.amendmentsExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         service.deleteAmendmentsById(id);
 
@@ -136,10 +139,10 @@ public class AmendmentsRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Amendments> updateByStatus(@PathVariable("id") String id, @PathVariable("status") String status) {
-        final Amendments result = service.updateAmendmentsStatus(id, status);
+        if (!service.amendmentsExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
-        return ResponseEntity
-                .ok()
-                .body(result);
+        return (ResponseEntity<Amendments>) stateContext.getState().updateLawStatus(id, status, stateContext.getParliament());
     }
 }

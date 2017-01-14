@@ -22,12 +22,12 @@ public class CanceledState implements State {
     }
 
     @Override
-    public ResponseEntity<?> withdrawalLaw(Law law) {
+    public ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament) {
         return forbiddenActionFromState(StateConstants.ParliamentStates.CANCELED_STATE);
     }
 
     @Override
-    public ResponseEntity<?> withdrawalAmendments(Amendments amendments) {
+    public ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament) {
         return forbiddenActionFromState(StateConstants.ParliamentStates.CANCELED_STATE);
     }
 
