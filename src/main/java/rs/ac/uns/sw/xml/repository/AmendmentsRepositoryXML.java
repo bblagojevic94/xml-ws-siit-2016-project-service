@@ -2,10 +2,12 @@ package rs.ac.uns.sw.xml.repository;
 
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentDescriptor;
+import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.io.marker.DocumentPatchHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
@@ -23,6 +25,7 @@ import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.createNamespaces;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.SUGGESTED;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.handleResults;
@@ -79,7 +82,27 @@ public class AmendmentsRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
 
-        return handler.toSearchResult(result);
+        return handler.toSearchResult(result, null);
+    }
+
+    public void deleteAmendments(String id) {
+        documentManager.delete(getDocumentId(id));
+
+        databaseClient.release();
+    }
+
+    public Amendments updateAmendmentsStatus(String id, String status) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String amendmentsStatusXPath = "aman:amandmani/aman:head/aman:status";
+
+        patchBuilder.replaceFragment(amendmentsStatusXPath, status);
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(getDocumentId(id), patchHandle);
+
+        return findAmendmentById(id);
     }
 
     private String getDocumentId(String value) {

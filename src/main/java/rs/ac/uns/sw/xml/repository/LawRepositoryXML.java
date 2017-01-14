@@ -17,12 +17,12 @@ import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.client.semantics.SPARQLMimeTypes;
 import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
-import com.marklogic.client.util.EditableNamespaceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
-import rs.ac.uns.sw.xml.domain.*;
+import rs.ac.uns.sw.xml.domain.Amendment;
+import rs.ac.uns.sw.xml.domain.Amendments;
+import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
@@ -30,21 +30,25 @@ import rs.ac.uns.sw.xml.util.ResultHandler;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.util.List;
 
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
+import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.*;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
-import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.readMetaData;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.transformTriples;
 
 @Component
 public class LawRepositoryXML {
+
+    public static final String DELETING = "brisanje";
+    public static final String CHANGING = "izmjena";
+    public static final String ADDING = "dopuna";
+
+    public static final String RESULTS = "results";
+    public static final String BINDINGS = "bindings";
 
     @Autowired
     XMLDocumentManager documentManager;
@@ -76,40 +80,43 @@ public class LawRepositoryXML {
         DocumentPatchBuilder patchBuilder;
         DocumentPatchHandle patchHandle;
 
-        String element = "";
+        String element;
 
-        // FIXME Better implementation in code refactoring
-        for (final Amendment amendment: amendments.getBody().getAmandman()) {
+        final List<Amendment> amendmentList = amendments.getBody().getAmandman();
+
+        for (final Amendment amendment: amendmentList) {
+
             final String type = amendment.getHead().getRjesenje();
             final String ref = amendment.getHead().getPredmet().getRef().getId();
             final String xpath = makeXPath(ref);
+
+            // Remove last two characters of XPath ('//')
             final String xpathTrimmed = xpath.substring(0, xpath.length() - 2);
 
             patchBuilder = documentManager.newPatchBuilder();
             patchBuilder.setNamespaces(createNamespaces());
 
-            // FIXME Constants
             switch (type) {
-                case "brisanje":
+                case DELETING:
                     patchBuilder.delete(xpathTrimmed);
                     break;
 
-                case "izmjena":
+                case CHANGING:
                     try {
-                        element = createXMLby(amendment.getBody().getOdredba());
+                        element = createXMLbyRegulation(amendment.getBody().getOdredba());
+                        patchBuilder.replaceFragment(xpathTrimmed, element);
                     } catch (JAXBException e) {
                         e.printStackTrace();
                     }
-                    patchBuilder.replaceFragment(xpathTrimmed, element);
                     break;
 
-                case "dopuna":
+                case ADDING:
                     try {
-                        element = createXMLby(amendment.getBody().getOdredba());
+                        element = createXMLbyRegulation(amendment.getBody().getOdredba());
+                        patchBuilder.insertFragment(xpathTrimmed, DocumentPatchBuilder.Position.AFTER, element);
                     } catch (JAXBException e) {
                         e.printStackTrace();
                     }
-                    patchBuilder.insertFragment(xpathTrimmed, DocumentPatchBuilder.Position.AFTER, element);
                     break;
             }
 
@@ -122,10 +129,24 @@ public class LawRepositoryXML {
 
     public boolean lawExists(String id) {
         DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
-        if (descriptor != null){
+        if (descriptor != null) {
             return true;
         }
         return false;
+    }
+
+    public Law updateLawStatus(String id, String status) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String lawStatusXPath = "propis:propis/propis:head/propis:status";
+
+        patchBuilder.replaceFragment(lawStatusXPath, status);
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id), patchHandle);
+
+        return findLawById(id);
     }
 
     public Law findLawById(String id) {
@@ -138,6 +159,12 @@ public class LawRepositoryXML {
         return null;
     }
 
+    public void deleteLaw(String id) {
+        documentManager.delete(getDocumentId(id));
+
+        databaseClient.release();
+    }
+
     public SearchResult findAll() {
 
         ResultHandler handler = new ResultHandler(Law.class, documentManager);
@@ -148,12 +175,15 @@ public class LawRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(criteria, result);
 
-        return handler.toSearchResult(result);
+        return handler.toSearchResult(result, null);
     }
 
-    public SearchResult findAllByQuery(String query) {
-
+    public SearchResult findAllByQueryAndMetadata(String query, MetaSearchWrapper searchWrapper) {
         ResultHandler handler = new ResultHandler(Law.class, documentManager);
+
+        if (query == null) {
+            return handler.toSearchResult(searchMetadata(searchWrapper));
+        }
 
         StringQueryDefinition queryDefinition = queryManager.newStringDefinition();
         queryDefinition.setCriteria(query);
@@ -162,18 +192,60 @@ public class LawRepositoryXML {
         SearchHandle result = new SearchHandle();
         queryManager.search(queryDefinition, result);
 
-        return handler.toSearchResult(result);
+
+        JsonNode properties = null;
+        try {
+            if (isMetadataSearchActive(searchWrapper))
+                properties = searchMetadata(searchWrapper);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return handler.toSearchResult(result, properties);
+    }
+
+    public JsonNode getMetadataJSON() {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+        return resultsHandle.get().path(RESULTS).path(BINDINGS);
+    }
+
+    public String getMetadataTriples() {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        DOMHandle resultsHandle = new DOMHandle();
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        StringWriter writer = new StringWriter();
+        transformTriples(resultsHandle.get(), writer);
+        return writer.getBuffer().toString();
     }
 
     private String getDocumentId(String value) {
         return String.format("/laws/%s.xml", value);
     }
 
-    public JsonNode searchMetadata(MetaSearchWrapper searchWrapper) {
+    private JsonNode searchMetadata(MetaSearchWrapper searchWrapper) {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
         String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT ?law FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
                 "?law <" + VOTES_FOR + "> ?votes_for . " +
                 "?law <" + VOTES_AGAINST + "> ?votes_against . " +
                 "?law <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
@@ -220,108 +292,14 @@ public class LawRepositoryXML {
         return resultsHandle.get().path("results").path("bindings");
     }
 
-    public JsonNode getMetadataJSON() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        JacksonHandle resultsHandle = new JacksonHandle();
-        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
-
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-        return resultsHandle.get().path("results").path("bindings");
-    }
-
-    public String getMetadataTriples() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        DOMHandle resultsHandle = new DOMHandle();
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-
-        StringWriter writer = new StringWriter();
-        transformTriples(resultsHandle.get(), writer);
-        return writer.getBuffer().toString();
-    }
-
-
-    //FIXME Refactor and move to some Util class
-    private String makeXPath(String ref) {
-
-        StringBuilder builder = new StringBuilder();
-
-        for (String s: ref.split("/")) {
-            builder.append(String.format("%s[@id='%s']", "*", s));
-            builder.append("//");
+    private boolean isMetadataSearchActive(MetaSearchWrapper obj) throws IllegalAccessException {
+        for (Field f : obj.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.get(obj) != null) {
+                return true;
+            }
         }
 
-        return builder.toString();
+        return false;
     }
-
-    private String makeCollectionPath(final String id) {
-        return String.format("/laws/%s.xml", id);
-    }
-
-    private EditableNamespaceContext createNamespaces() {
-        EditableNamespaceContext namespaces = new EditableNamespaceContext();
-
-        // FIXME Make constants
-        namespaces.put("aman", "http://www.parlament.gov.rs/schema/amandman");
-        namespaces.put("pred", "http://www.parlament.gov.rs/rdf_schema/skupstina#");
-        namespaces.put("elem", "http://www.parlament.gov.rs/schema/elementi");
-        //namespaces.put("prop", "http://www.parlament.gov.rs/schema/propis");
-        namespaces.put("fn", "http://www.w3.org/2005/xpath-functions");
-
-        return namespaces;
-    }
-
-    // FIXME Make util
-    private String createXMLby(Amendment.Body.Odredba odredba) throws JAXBException {
-
-        // Try to get Article
-        final Article article = odredba.getClan();
-        if (article != null) {
-            return cleanXML(RepositoryUtil.toXmlString(article, Article.class));
-        }
-
-        // Try to get Paragraph
-        final Paragraph paragraph = odredba.getStav();
-        if (paragraph != null) {
-            return cleanXML(RepositoryUtil.toXmlString(paragraph, Paragraph.class));
-        }
-
-        // Try to get Clause
-        final Clause clause = odredba.getTacka();
-        if (clause != null) {
-            return cleanXML(RepositoryUtil.toXmlString(clause, Clause.class));
-        }
-
-        // Try to get Subclause
-        final Subclause subclause = odredba.getPodtacka();
-        if (subclause != null) {
-            return cleanXML(RepositoryUtil.toXmlString(subclause, Subclause.class));
-        }
-
-        // Try to get Item
-        final Item item = odredba.getAlineja();
-        if (item != null) {
-            return cleanXML(RepositoryUtil.toXmlString(item, Item.class));
-        }
-
-        return null;
-    }
-
-    private String cleanXML(String xml) {
-        return (xml.replaceAll("(xmlns:elem=\".*\")|(<\\?.*\\?>)", "")).replaceAll(" +", " ");
-    }
-
 }

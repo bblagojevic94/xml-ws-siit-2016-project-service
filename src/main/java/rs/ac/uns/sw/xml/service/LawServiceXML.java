@@ -23,6 +23,14 @@ public class LawServiceXML {
         return repositoryXML.updateLawWithAmendments(amendments);
     }
 
+    public void deleteLawById(String id) {
+        repositoryXML.deleteLaw(id);
+    }
+
+    public Law updateLawStatus(String id, String status) {
+        return repositoryXML.updateLawStatus(id, status);
+    }
+
     public SearchResult getAll() {
         return repositoryXML.findAll();
     }
@@ -31,12 +39,8 @@ public class LawServiceXML {
         return repositoryXML.findLawById(id);
     }
 
-    public JsonNode searchLaws(MetaSearchWrapper searchWrapper) {
-        return repositoryXML.searchMetadata(searchWrapper);
-    }
-
-    public SearchResult getAllByQuery(String query) {
-        return repositoryXML.findAllByQuery(query);
+    public SearchResult getAllByQueryAndMetadata(String query, MetaSearchWrapper searchWrapper) {
+        return repositoryXML.findAllByQueryAndMetadata(query, searchWrapper);
     }
 
     public JsonNode getMetadataJSON() {
