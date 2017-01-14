@@ -2,7 +2,6 @@ package rs.ac.uns.sw.xml.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -71,51 +70,44 @@ public class LawRestController {
     }
 
     @RequestMapping(
-            value = "/{name}",
+            value = "/{id}",
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_XML_VALUE
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                    MediaType.APPLICATION_XHTML_XML_VALUE
+            }
     )
-    public ResponseEntity<Law> getLawByName(@PathVariable String name) {
-        final Law result = service.getOneById(name);
+    public ResponseEntity<?> getLawById(@RequestHeader("Accept") String mediaType, @PathVariable String id)
+            throws JAXBException, TransformerException, IOException, SAXException, ParserConfigurationException {
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+        final Law result = service.getOneById(id);
 
-    @RequestMapping(
-            value = "/pdf/{name}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+        HttpHeaders headers = new HttpHeaders();
+        switch (mediaType) {
+            case MediaType.APPLICATION_XML_VALUE: {
+                headers.setContentType(MediaType.APPLICATION_XML);
+                return new ResponseEntity<>(result, headers, HttpStatus.OK);
+            }
 
-    )
-    public ResponseEntity<InputStreamResource> downloadLawPDF(@PathVariable String name)
-            throws IOException, JAXBException, TransformerException, SAXException {
+            case MediaType.APPLICATION_OCTET_STREAM_VALUE: {
+                transformer.setName(NAME);
 
-        final Law result = service.getOneById(name);
+                headers.set("Content-Disposition", "attachment; filename=law.pdf");
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                return new ResponseEntity<>(transformer.toPdf(RepositoryUtil.toXmlString(result, Law.class)), headers, HttpStatus.OK);
+            }
 
-        transformer.setName(NAME);
+            case MediaType.APPLICATION_XHTML_XML_VALUE: {
+                transformer.setName(NAME);
 
-        return ResponseEntity
-                .ok()
-                .header("Content-Disposition", "attachment; filename=law.pdf")
-                .body(transformer.toPdf(RepositoryUtil.toXmlString(result, Law.class)));
-    }
+                headers.setContentType(MediaType.APPLICATION_XHTML_XML);
+                return new ResponseEntity<>(transformer.toHtml(RepositoryUtil.toXmlString(result, Law.class)), headers, HttpStatus.OK);
+            }
 
-    @RequestMapping(
-            value = "/html/{name}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_XHTML_XML_VALUE
-
-    )
-    public ResponseEntity<String> downloadLawHtml(@PathVariable String name)
-            throws IOException, JAXBException, TransformerException, SAXException, ParserConfigurationException {
-
-        final Law result = service.getOneById(name);
-
-        transformer.setName(NAME);
-
-        return ResponseEntity
-                .ok()
-                .body(transformer.toHtml(RepositoryUtil.toXmlString(result, Law.class)));
+            default:
+                return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(
