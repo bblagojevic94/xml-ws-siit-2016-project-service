@@ -56,6 +56,20 @@
         </fo:block>
     </xsl:template>
 
+    <xsl:template match="elem:pododjeljak">
+        <!-- New Line -->
+        <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
+        <fo:block font-family="Arial" font-weight="bold" text-align="center" font-size="14pt">
+            <xsl:value-of select="@name"/>
+        </fo:block>
+        <fo:block linefeed-treatment="preserve" font-family="Arial" font-style="italic" text-align="center" font-size="12pt">
+            <xsl:number format="a" select="position()"/>) <xsl:value-of select="@name"/>
+        </fo:block>
+        <fo:block>
+            <xsl:apply-templates/>
+        </fo:block>
+    </xsl:template>
+
     <xsl:template match="elem:clan">
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
