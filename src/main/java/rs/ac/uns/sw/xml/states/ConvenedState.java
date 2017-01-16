@@ -12,6 +12,7 @@ import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
 import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.HeaderUtil;
 import rs.ac.uns.sw.xml.util.StateConstants;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
 import static rs.ac.uns.sw.xml.util.StatesUtil.addAgenda;
@@ -116,9 +117,12 @@ public class ConvenedState implements State {
     }
 
     @Override
-    public ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral) {
-        return null;
+    public ResponseEntity<?> updateLawVoting(String id, VotingObject voting) {
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
     }
 
-
+    @Override
+    public ResponseEntity<?> updateAmendmentVoting(String id, VotingObject voting) {
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
+    }
 }

@@ -143,6 +143,6 @@ public class AmendmentsRestController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        return (ResponseEntity<Amendments>) stateContext.getState().updateLawStatus(id, status, stateContext.getParliament());
+        return (ResponseEntity<Amendments>) stateContext.getState().updateAmendmentStatus(id, status, stateContext.getParliament());
     }
 }

@@ -3,8 +3,10 @@ package rs.ac.uns.sw.xml.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.sw.xml.domain.Amendment;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.repository.AmendmentsRepositoryXML;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import java.util.List;
 
@@ -36,5 +38,9 @@ public class AmendmentsServiceXML {
 
     public boolean amendmentsExists(String id) {
         return repositoryXML.amendmentsExists(id);
+    }
+
+    public Amendments updateVoting(String id, VotingObject voting){
+        return repositoryXML.updateAmendmentsVotes(id, voting);
     }
 }

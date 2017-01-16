@@ -6,6 +6,7 @@ import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.Parliament;
 import rs.ac.uns.sw.xml.util.StateConstants;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
 
@@ -32,7 +33,12 @@ public class FinishedState implements State {
     }
 
     @Override
-    public ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral) {
+    public ResponseEntity<?> updateLawVoting(String id, VotingObject voting) {
+        return forbiddenActionFromState(StateConstants.ParliamentStates.FINISHED_STATE);
+    }
+
+    @Override
+    public ResponseEntity<?> updateAmendmentVoting(String id, VotingObject voting) {
         return forbiddenActionFromState(StateConstants.ParliamentStates.FINISHED_STATE);
     }
 }

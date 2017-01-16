@@ -10,6 +10,7 @@ import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
 import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.StateConstants;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
 import static rs.ac.uns.sw.xml.util.StatesUtil.addAgenda;
@@ -54,7 +55,14 @@ public class InProgressState implements State {
     }
 
     @Override
-    public ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral) {
-        return null;
+    public ResponseEntity<?> updateLawVoting(String id, VotingObject voting) {
+        final Law result = lawServiceXML.updateVotes(id, voting);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> updateAmendmentVoting(String id, VotingObject voting) {
+        final Amendments result= amendmentsServiceXML.updateVoting(id, voting);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

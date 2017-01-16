@@ -7,26 +7,31 @@ import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.io.marker.DocumentPatchHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
-import com.marklogic.client.semantics.SPARQLMimeTypes;
-import com.marklogic.client.semantics.SPARQLQueryDefinition;
-import com.marklogic.client.semantics.SPARQLQueryManager;
+import com.marklogic.client.semantics.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
+import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.config.MarkLogicConstants.Namespaces.SCHEMA;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.createNamespaces;
+import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.makeCollectionPath;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.SUGGESTED;
+import static rs.ac.uns.sw.xml.util.PredicatesConstants.VOTES_AGAINST;
+import static rs.ac.uns.sw.xml.util.PredicatesConstants.VOTES_FOR;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.handleResults;
 
@@ -123,5 +128,35 @@ public class AmendmentsRepositoryXML {
 
         resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
         return handleResults(resultsHandle);
+    }
+
+    public Amendments updateAmendmentsVotes(String id, VotingObject voting) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String amenVotesForXPath = "aman:amandmani/aman:head/aman:glasova_za";
+        final String amenVotesAgainstXPath = "aman:amandmani/aman:head/aman:glasova_protiv";
+        final String amenVotesNeutralXPath = "aman:amandmani/aman:head/aman:glasova_suzdrzani";
+
+        patchBuilder.replaceFragment(amenVotesForXPath, voting.getVotesFor());
+        patchBuilder.replaceFragment(amenVotesAgainstXPath, voting.getVotesAgainst());
+        patchBuilder.replaceFragment(amenVotesNeutralXPath, voting.getVotesNeutral());
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id), patchHandle);
+
+        String triples = "<http://www.ftn.uns.ac.rs/rdf/examples/amendments/" + id + "> <" + VOTES_FOR + "> \"" + voting.getVotesFor() + "\"^^<" + SCHEMA + "int> ."
+                + "<http://www.ftn.uns.ac.rs/rdf/examples/amendments/" + id + "> <" + VOTES_AGAINST + "> \"" + voting.getVotesAgainst() + "\"^^<" + SCHEMA + "int> .";
+
+        StringHandle stringHandle = new StringHandle()
+                .with(triples)
+                .withMimetype(RDFMimeTypes.NTRIPLES);
+
+        GraphManager graphManager = databaseClient.newGraphManager();
+        // Update previous triple to an existing graph
+        graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
+        graphManager.merge(PARLIAMENT_NAMED_GRAPH_URI, stringHandle);
+
+        return findAmendmentById(id);
     }
 }

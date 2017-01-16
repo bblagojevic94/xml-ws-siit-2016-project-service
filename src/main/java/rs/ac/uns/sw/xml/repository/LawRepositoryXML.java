@@ -5,18 +5,13 @@ import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.XMLDocumentManager;
-import com.marklogic.client.io.DOMHandle;
-import com.marklogic.client.io.JAXBHandle;
-import com.marklogic.client.io.JacksonHandle;
-import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.io.*;
 import com.marklogic.client.io.marker.DocumentPatchHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StringQueryDefinition;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
-import com.marklogic.client.semantics.SPARQLMimeTypes;
-import com.marklogic.client.semantics.SPARQLQueryDefinition;
-import com.marklogic.client.semantics.SPARQLQueryManager;
+import com.marklogic.client.semantics.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
@@ -28,12 +23,14 @@ import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.ResultHandler;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.config.MarkLogicConstants.Namespaces.SCHEMA;
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.*;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
@@ -84,7 +81,7 @@ public class LawRepositoryXML {
 
         final List<Amendment> amendmentList = amendments.getBody().getAmandman();
 
-        for (final Amendment amendment: amendmentList) {
+        for (final Amendment amendment : amendmentList) {
 
             final String type = amendment.getHead().getRjesenje();
             final String ref = amendment.getHead().getPredmet().getRef().getId();
@@ -301,5 +298,35 @@ public class LawRepositoryXML {
         }
 
         return false;
+    }
+
+    public Law updateLawVotes(String id, VotingObject voting) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String lawVotesForXPath = "propis:propis/propis:head/propis:glasova_za";
+        final String lawVotesAgainstXPath = "propis:propis/propis:head/propis:glasova_protiv";
+        final String lawVotesNeutralXPath = "propis:propis/propis:head/propis:glasova_suzdrzani";
+
+        patchBuilder.replaceFragment(lawVotesForXPath, voting.getVotesFor());
+        patchBuilder.replaceFragment(lawVotesAgainstXPath, voting.getVotesAgainst());
+        patchBuilder.replaceFragment(lawVotesNeutralXPath, voting.getVotesNeutral());
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id), patchHandle);
+
+        String triples = "<http://www.ftn.uns.ac.rs/rdf/examples/laws/" + id + "> <" + VOTES_FOR + "> \"" + voting.getVotesFor() + "\"^^<" + SCHEMA + "int> ."
+                + "<http://www.ftn.uns.ac.rs/rdf/examples/laws/" + id + "> <" + VOTES_AGAINST + "> \"" + voting.getVotesAgainst() + "\"^^<" + SCHEMA + "int> .";
+
+        StringHandle stringHandle = new StringHandle()
+                .with(triples)
+                .withMimetype(RDFMimeTypes.NTRIPLES);
+
+        GraphManager graphManager = databaseClient.newGraphManager();
+        // Update previous triple to an existing graph
+        graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
+        graphManager.merge(PARLIAMENT_NAMED_GRAPH_URI, stringHandle);
+
+        return findLawById(id);
     }
 }
