@@ -61,10 +61,8 @@ public class RDFExtractorUtil {
             StringHandle handle = new StringHandle(out.toString())
                     .withMimetype(RDFMimeTypes.RDFXML);
 
-            // Change to merge
-            graphManager.write(graphURI, handle);
 
-            System.out.println(handle);
+            graphManager.merge(graphURI, handle);
 
             // Checking if writing is well done
             // System.out.println(readMetaData(databaseClient, graphURI));

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.xml.sax.SAXException;
 import rs.ac.uns.sw.xml.domain.Amendments;
+import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.Parliament;
 import rs.ac.uns.sw.xml.service.AmendmentsServiceXML;
 import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
@@ -18,6 +19,7 @@ import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.HeaderUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.Transformers;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -144,5 +146,19 @@ public class AmendmentsRestController {
         }
 
         return (ResponseEntity<Amendments>) stateContext.getState().updateAmendmentStatus(id, status, stateContext.getParliament());
+    }
+
+    @RequestMapping(
+            value = "/voting/{id}/",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Law> updateVotes(@PathVariable("id") String id, @RequestBody VotingObject votes) {
+        if (!service.amendmentsExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return (ResponseEntity<Law>) stateContext.getState().updateAmendmentVoting(id, votes);
     }
 }

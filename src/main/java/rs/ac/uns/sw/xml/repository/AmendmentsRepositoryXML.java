@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
-import rs.ac.uns.sw.xml.util.RepositoryUtil;
-import rs.ac.uns.sw.xml.util.ResultHandler;
+import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
@@ -143,19 +141,10 @@ public class AmendmentsRepositoryXML {
         patchBuilder.replaceFragment(amenVotesNeutralXPath, voting.getVotesNeutral());
 
         DocumentPatchHandle patchHandle = patchBuilder.build();
-        documentManager.patch(makeCollectionPath(id), patchHandle);
+        documentManager.patch(makeCollectionPath(id, "amendments"), patchHandle);
 
-        String triples = "<http://www.ftn.uns.ac.rs/rdf/examples/amendments/" + id + "> <" + VOTES_FOR + "> \"" + voting.getVotesFor() + "\"^^<" + SCHEMA + "int> ."
-                + "<http://www.ftn.uns.ac.rs/rdf/examples/amendments/" + id + "> <" + VOTES_AGAINST + "> \"" + voting.getVotesAgainst() + "\"^^<" + SCHEMA + "int> .";
-
-        StringHandle stringHandle = new StringHandle()
-                .with(triples)
-                .withMimetype(RDFMimeTypes.NTRIPLES);
-
-        GraphManager graphManager = databaseClient.newGraphManager();
-        // Update previous triple to an existing graph
-        graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
-        graphManager.merge(PARLIAMENT_NAMED_GRAPH_URI, stringHandle);
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.AMENDMENTS, voting, sparqlQueryManager);
 
         return findAmendmentById(id);
     }
