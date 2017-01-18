@@ -69,8 +69,8 @@ public class Paragraph {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Clause }
      * {@link String }
+     * {@link Clause }
      * 
      * 
      */

@@ -15,7 +15,7 @@ public class PartialUpdateUtil {
      * - patching complete element into database
      *
      * @param regulation
-     * @return  Child of regulation parsed in string - it can be article, paragraph, clause, subclause or item
+     * @return Child of regulation parsed in string - it can be article, paragraph, clause, subclause or item
      * @throws JAXBException
      */
     public static String createXMLbyRegulation(Amendment.Body.Odredba regulation) throws JAXBException {
@@ -73,14 +73,14 @@ public class PartialUpdateUtil {
     /**
      * Converts our convention element id to XPath ID
      *
-     * @param ref   String which represents OUR CONVENTION of ID
+     * @param ref String which represents OUR CONVENTION of ID
      * @return XPath expression for finding element by provided ID
      */
     public static String makeXPath(String ref) {
 
         StringBuilder builder = new StringBuilder();
 
-        for (String s: ref.split("/")) {
+        for (String s : ref.split("/")) {
             builder.append(String.format("%s[@id='%s']", "*", s));
             builder.append("//");
         }
@@ -94,8 +94,8 @@ public class PartialUpdateUtil {
      * @param id
      * @return collection path
      */
-    public static String makeCollectionPath(final String id) {
-        return String.format("/laws/%s.xml", id);
+    public static String makeCollectionPath(final String id, final String collection) {
+        return String.format("/%s/%s.xml", collection, id);
     }
 
     /**
@@ -103,7 +103,7 @@ public class PartialUpdateUtil {
      * Also, function removes first element which represents standard XML preprocessor
      * <?xml version="1.0" encoding="UTF-8"?>
      *
-     * @param xml   XML with namespaces and first element
+     * @param xml XML with namespaces and first element
      * @return Cleaned XML String
      */
     private static String cleanXML(String xml) {

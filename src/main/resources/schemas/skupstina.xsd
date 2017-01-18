@@ -38,7 +38,8 @@
                             <xs:element name="akti">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element maxOccurs="unbounded" ref="elem:ref"/>
+                                        <xs:element maxOccurs="unbounded" ref="elem:ref"
+                                            minOccurs="0"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

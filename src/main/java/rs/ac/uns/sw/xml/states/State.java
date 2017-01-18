@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.domain.Parliament;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 public interface State {
 
@@ -12,9 +13,11 @@ public interface State {
 
     ResponseEntity<?> suggestAmendments(Amendments amendments, Parliament parliament);
 
-    ResponseEntity<?> withdrawalLaw(Law law);
+    ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament);
 
-    ResponseEntity<?> withdrawalAmendments(Amendments amendments);
+    ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament);
 
-    ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral);
+    ResponseEntity<?> updateLawVoting(String id, VotingObject voting);
+
+    ResponseEntity<?> updateAmendmentVoting(String id, VotingObject voting);
 }

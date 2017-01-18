@@ -23,11 +23,9 @@ import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendment;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.domain.Law;
-import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
-import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
-import rs.ac.uns.sw.xml.util.RepositoryUtil;
-import rs.ac.uns.sw.xml.util.ResultHandler;
+import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
@@ -84,7 +82,7 @@ public class LawRepositoryXML {
 
         final List<Amendment> amendmentList = amendments.getBody().getAmandman();
 
-        for (final Amendment amendment: amendmentList) {
+        for (final Amendment amendment : amendmentList) {
 
             final String type = amendment.getHead().getRjesenje();
             final String ref = amendment.getHead().getPredmet().getRef().getId();
@@ -121,7 +119,7 @@ public class LawRepositoryXML {
             }
 
             patchHandle = patchBuilder.build();
-            documentManager.patch(makeCollectionPath(lawId), patchHandle);
+            documentManager.patch(makeCollectionPath(lawId, "laws"), patchHandle);
         }
 
         return findLawById(lawId);
@@ -144,7 +142,10 @@ public class LawRepositoryXML {
         patchBuilder.replaceFragment(lawStatusXPath, status);
 
         DocumentPatchHandle patchHandle = patchBuilder.build();
-        documentManager.patch(makeCollectionPath(id), patchHandle);
+        documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
+
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.LAWS, LAW_STATUS, status, sparqlQueryManager);
 
         return findLawById(id);
     }
@@ -301,5 +302,26 @@ public class LawRepositoryXML {
         }
 
         return false;
+    }
+
+    public Law updateLawVotes(String id, VotingObject voting) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String lawVotesForXPath = "propis:propis/propis:head/propis:glasova_za";
+        final String lawVotesAgainstXPath = "propis:propis/propis:head/propis:glasova_protiv";
+        final String lawVotesNeutralXPath = "propis:propis/propis:head/propis:glasova_suzdrzani";
+
+        patchBuilder.replaceFragment(lawVotesForXPath, voting.getVotesFor());
+        patchBuilder.replaceFragment(lawVotesAgainstXPath, voting.getVotesAgainst());
+        patchBuilder.replaceFragment(lawVotesNeutralXPath, voting.getVotesNeutral());
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
+
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.LAWS, voting, sparqlQueryManager);
+
+        return findLawById(id);
     }
 }

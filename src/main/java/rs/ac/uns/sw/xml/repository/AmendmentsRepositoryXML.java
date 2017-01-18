@@ -18,14 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.sw.xml.config.MarkLogicConstants;
 import rs.ac.uns.sw.xml.domain.Amendments;
-import rs.ac.uns.sw.xml.util.RDFExtractorUtil;
-import rs.ac.uns.sw.xml.util.RepositoryUtil;
-import rs.ac.uns.sw.xml.util.ResultHandler;
+import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import java.util.List;
 
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.createNamespaces;
+import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.makeCollectionPath;
+import static rs.ac.uns.sw.xml.util.PredicatesConstants.AMENDMENTS_STATUS;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.SUGGESTED;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.handleResults;
@@ -102,6 +103,9 @@ public class AmendmentsRepositoryXML {
         DocumentPatchHandle patchHandle = patchBuilder.build();
         documentManager.patch(getDocumentId(id), patchHandle);
 
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.AMENDMENTS, AMENDMENTS_STATUS, status, sparqlQueryManager);
+
         return findAmendmentById(id);
     }
 
@@ -123,5 +127,26 @@ public class AmendmentsRepositoryXML {
 
         resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
         return handleResults(resultsHandle);
+    }
+
+    public Amendments updateAmendmentsVotes(String id, VotingObject voting) {
+        DocumentPatchBuilder patchBuilder = documentManager.newPatchBuilder();
+        patchBuilder.setNamespaces(createNamespaces());
+
+        final String amenVotesForXPath = "aman:amandmani/aman:head/aman:glasova_za";
+        final String amenVotesAgainstXPath = "aman:amandmani/aman:head/aman:glasova_protiv";
+        final String amenVotesNeutralXPath = "aman:amandmani/aman:head/aman:glasova_suzdrzani";
+
+        patchBuilder.replaceFragment(amenVotesForXPath, voting.getVotesFor());
+        patchBuilder.replaceFragment(amenVotesAgainstXPath, voting.getVotesAgainst());
+        patchBuilder.replaceFragment(amenVotesNeutralXPath, voting.getVotesNeutral());
+
+        DocumentPatchHandle patchHandle = patchBuilder.build();
+        documentManager.patch(makeCollectionPath(id, "amendments"), patchHandle);
+
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.AMENDMENTS, voting, sparqlQueryManager);
+
+        return findAmendmentById(id);
     }
 }

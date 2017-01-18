@@ -24,4 +24,14 @@ public class Constants {
     }
 
     public static final String ACTIVE_PARLIAMENT = "active_parliament";
+
+    public final class Resources {
+        public static final String BASE_RESOURCE_URI = "http://www.ftn.uns.ac.rs/rdf/examples/";
+        public static final String LAWS = BASE_RESOURCE_URI + "laws/";
+        public static final String AMENDMENTS = BASE_RESOURCE_URI + "amendments/";
+        public static final String USERS = "";
+    }
+
 }
+
+

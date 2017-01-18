@@ -11,6 +11,12 @@ import rs.ac.uns.sw.xml.service.LawServiceXML;
 import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
 import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.HeaderUtil;
+import rs.ac.uns.sw.xml.util.StateConstants;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
+
+import static rs.ac.uns.sw.xml.util.HeaderUtil.forbiddenActionFromState;
+import static rs.ac.uns.sw.xml.util.StatesUtil.addAgenda;
+import static rs.ac.uns.sw.xml.util.StatesUtil.removeAgenda;
 
 
 public class ConvenedState implements State {
@@ -40,9 +46,7 @@ public class ConvenedState implements State {
 
         final Law result = lawServiceXML.create(law);
 
-        Ref ref = new Ref();
-        ref.setId(law.getId());
-        addAgenda(ref, parliament);
+        addAgenda(law.getId(), parliament);
 
         parliamentServiceXML.create(parliament);
 
@@ -65,7 +69,7 @@ public class ConvenedState implements State {
 
         Ref ref = new Ref();
         ref.setId(amendments.getId());
-        addAgenda(ref, parliament);
+        addAgenda(amendments.getId(), parliament);
 
         parliamentServiceXML.create(parliament);
 
@@ -73,28 +77,52 @@ public class ConvenedState implements State {
     }
 
     @Override
-    public ResponseEntity<?> withdrawalLaw(Law law) {
-        return null;
-    }
+    public ResponseEntity<?> updateLawStatus(String id, String status, Parliament parliament) {
+        if (Constants.LawsStates.WITHDRAWN.equals(status)) {
+            final Law result = lawServiceXML.updateLawStatus(id, status);
+            removeAgenda(id, parliament);
 
-    @Override
-    public ResponseEntity<?> withdrawalAmendments(Amendments amendments) {
-        return null;
-    }
+            parliamentServiceXML.create(parliament);
 
-    @Override
-    public ResponseEntity<?> voting(int votesFor, int votesAgainst, int votesNeutral) {
-        return null;
-    }
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if (Constants.LawsStates.SUGGESTED.equals(status)) {
+            final Law result = lawServiceXML.updateLawStatus(id, status);
+            addAgenda(id, parliament);
 
-    private boolean addAgenda(Ref ref, Parliament parliament) {
-        for (Ref r : parliament.getBody().getAkti().getRef()) {
-            if (ref.getId().equals(r.getId())) {
-                return false;
-            }
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
         }
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
+    }
 
-        parliament.getBody().getAkti().getRef().add(ref);
-        return true;
+    @Override
+    public ResponseEntity<?> updateAmendmentStatus(String id, String status, Parliament parliament) {
+        if (Constants.AmendmentsStates.WITHDRAWN.equals(status)) {
+            final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
+            removeAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if (Constants.AmendmentsStates.SUGGESTED.equals(status)) {
+            final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
+            addAgenda(id, parliament);
+
+            parliamentServiceXML.create(parliament);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
+    }
+
+    @Override
+    public ResponseEntity<?> updateLawVoting(String id, VotingObject voting) {
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
+    }
+
+    @Override
+    public ResponseEntity<?> updateAmendmentVoting(String id, VotingObject voting) {
+        return forbiddenActionFromState(StateConstants.ParliamentStates.CONVENED_STATE);
     }
 }

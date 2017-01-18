@@ -8,6 +8,7 @@ import rs.ac.uns.sw.xml.domain.Law;
 import rs.ac.uns.sw.xml.repository.LawRepositoryXML;
 import rs.ac.uns.sw.xml.util.MetaSearchWrapper;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 @Service
 public class LawServiceXML {
@@ -53,5 +54,9 @@ public class LawServiceXML {
 
     public boolean lawExists(String id) {
         return repositoryXML.lawExists(id);
+    }
+
+    public Law updateVotes(String id, VotingObject voting) {
+        return repositoryXML.updateLawVotes(id, voting);
     }
 }

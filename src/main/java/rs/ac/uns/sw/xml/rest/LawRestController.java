@@ -17,6 +17,7 @@ import rs.ac.uns.sw.xml.service.ParliamentServiceXML;
 import rs.ac.uns.sw.xml.states.StateContext;
 import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
+import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -203,6 +204,9 @@ public class LawRestController {
             method = RequestMethod.DELETE
     )
     public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        if (!service.lawExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         service.deleteLawById(id);
 
@@ -217,10 +221,24 @@ public class LawRestController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<Law> updateByStatus(@PathVariable("id") String id, @PathVariable("status") String status) {
-        final Law result = service.updateLawStatus(id, status);
+        if (!service.lawExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
-        return ResponseEntity
-                .ok()
-                .body(result);
+        return (ResponseEntity<Law>) stateContext.getState().updateLawStatus(id, status, stateContext.getParliament());
+    }
+
+    @RequestMapping(
+            value = "/voting/{id}/",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<Law> updateVotes(@PathVariable("id") String id, @RequestBody VotingObject votes) {
+        if (!service.lawExists(id)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return (ResponseEntity<Law>) stateContext.getState().updateLawVoting(id, votes);
     }
 }
