@@ -28,4 +28,17 @@ public class RDFUpdateUtil {
 
         sparqlQueryManager.executeUpdate(query);
     }
+
+    public static void updateRDFStringObject(String id, String resource, String predicate, String value, SPARQLQueryManager sparqlQueryManager) {
+        String queryDefinition =
+                "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> \n" +
+                        " WITH <" + PARLIAMENT_NAMED_GRAPH_URI + ">" +
+                        " DELETE { <" + resource + id + "> <" + predicate + ">  ?o} " +
+                        " INSERT { <" + resource + id + "> <" + predicate + "> '" + value + "' }" +
+                        " WHERE  { <" + resource + id + "> <" + predicate + ">  ?o}";
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        sparqlQueryManager.executeUpdate(query);
+    }
 }

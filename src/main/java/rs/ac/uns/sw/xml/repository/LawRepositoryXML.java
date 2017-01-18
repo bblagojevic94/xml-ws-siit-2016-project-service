@@ -144,6 +144,9 @@ public class LawRepositoryXML {
         DocumentPatchHandle patchHandle = patchBuilder.build();
         documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
 
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.LAWS, LAW_STATUS, status, sparqlQueryManager);
+
         return findLawById(id);
     }
 
