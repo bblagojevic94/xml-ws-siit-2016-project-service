@@ -68,7 +68,7 @@ public class UserRestController {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setLocation(
-                builder.path("/users/{id}.xml")
+                builder.path("/users/" + result.getId() +".xml")
                         .buildAndExpand(user.getId()).toUri());
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
