@@ -241,4 +241,17 @@ public class LawRestController {
 
         return (ResponseEntity<Law>) stateContext.getState().updateLawVoting(id, votes);
     }
+
+
+    @RequestMapping(value = "/users/{userId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> getLawsByProposer(@PathVariable String userId) {
+        final SearchResult result = service.searchByProposer(userId);
+
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
 }

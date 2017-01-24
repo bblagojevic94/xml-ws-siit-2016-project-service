@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.Constants.Resources.USERS;
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.*;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
@@ -323,5 +324,31 @@ public class LawRepositoryXML {
         RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.LAWS, voting, sparqlQueryManager);
 
         return findLawById(id);
+    }
+
+    public SearchResult searchByProposer(String username){
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "?law <" + VOTES_FOR + "> ?votes_for . " +
+                "?law <" + VOTES_AGAINST + "> ?votes_against . " +
+                "?law <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
+                "?law <" + DATE_OF_PROPOSAL + "> ?proposal_date . " +
+                "?law <" + DATE_OF_VOTING + "> ?voting_date . " +
+                "?law <" + LAW_STATUS + "> ?status . " +
+                "?law <" + SUGGESTED + "> <" + USERS + username + "> . }" ;
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+        JsonNode node = resultsHandle.get().path("results").path("bindings");
+
+        ResultHandler handler = new ResultHandler(Law.class, documentManager);
+        return handler.toSearchResult(node);
     }
 }
