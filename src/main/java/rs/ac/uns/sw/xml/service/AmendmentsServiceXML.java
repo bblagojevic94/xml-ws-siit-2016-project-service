@@ -44,4 +44,8 @@ public class AmendmentsServiceXML {
     public Amendments updateVoting(String id, VotingObject voting){
         return repositoryXML.updateAmendmentsVotes(id, voting);
     }
+
+    public SearchResult findByLaw(String lawId) {
+        return repositoryXML.findByLaw(lawId);
+    }
 }

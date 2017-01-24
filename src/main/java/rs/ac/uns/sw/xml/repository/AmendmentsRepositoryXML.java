@@ -26,6 +26,7 @@ import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.Constants.Resources.LAWS;
 import static rs.ac.uns.sw.xml.util.Constants.Resources.USERS;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.createNamespaces;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.makeCollectionPath;
@@ -115,7 +116,6 @@ public class AmendmentsRepositoryXML {
         return String.format("/amendments/%s.xml", value);
     }
 
-
     public SearchResult findAmendmentsByProposer(String username) {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
@@ -161,5 +161,32 @@ public class AmendmentsRepositoryXML {
         RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.AMENDMENTS, voting, sparqlQueryManager);
 
         return findAmendmentById(id);
+    }
+
+    public SearchResult findByLaw(String lawId){
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "?law <" + VOTES_FOR + "> ?votes_for . " +
+                "?law <" + VOTES_AGAINST + "> ?votes_against . " +
+                "?law <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
+                "?law <" + DATE_OF_PROPOSAL + "> ?proposal_date . " +
+                "?law <" + DATE_OF_VOTING + "> ?voting_date . " +
+                "?law <" + AMENDMENTS_STATUS + "> ?status . " +
+                "?law <" + SUGGESTED + "> ?proposer . " +
+                "?law <" + APPLIES_TO + "> <" + LAWS + lawId + "> }";
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+        JsonNode node = resultsHandle.get().path("results").path("bindings");
+
+        ResultHandler handler = new ResultHandler(Amendments.class, documentManager);
+        return handler.toSearchResult(node);
     }
 }

@@ -162,4 +162,16 @@ public class AmendmentsRestController {
 
         return (ResponseEntity<Law>) stateContext.getState().updateAmendmentVoting(id, votes);
     }
+
+
+    @RequestMapping(
+            value = "/laws/{lawId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> getAmendmentsByLaw(@PathVariable String lawId) throws URISyntaxException {
+        final SearchResult result = service.findByLaw(lawId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
