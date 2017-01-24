@@ -81,7 +81,7 @@ public class UserRestController {
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<AppUser> getUserById(@PathVariable Long id, UriComponentsBuilder builder) throws URISyntaxException {
+    public ResponseEntity<AppUser> getUserById(@PathVariable String id, UriComponentsBuilder builder) throws URISyntaxException {
         AppUser result = service.findById(id);
 
         HttpHeaders headers = new HttpHeaders();
@@ -91,6 +91,21 @@ public class UserRestController {
                         .buildAndExpand(id).toUri());
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(
+            value    = "/login",
+            method   = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<AppUser> getLoggedIn() throws URISyntaxException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        System.out.println(authentication.getName());
+        AppUser result = service.findById(authentication.getName());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

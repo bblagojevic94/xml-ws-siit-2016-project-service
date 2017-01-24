@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element ref="{http://www.parlament.gov.rs/schema/korisnici}Adresa"/>
  *       &lt;/sequence>
- *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}long" />
+ *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -42,7 +42,7 @@ public abstract class Person {
     @XmlElement(name = "Adresa", namespace = "http://www.parlament.gov.rs/schema/korisnici", required = true)
     protected Address adresa;
     @XmlAttribute(name = "id")
-    protected Long id;
+    protected String id;
 
     /**
      * Gets the value of the adresa property.
@@ -73,10 +73,10 @@ public abstract class Person {
      * 
      * @return
      *     possible object is
-     *     {@link Long }
+     *     {@link String }
      *     
      */
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -85,10 +85,10 @@ public abstract class Person {
      * 
      * @param value
      *     allowed object is
-     *     {@link Long }
+     *     {@link String }
      *     
      */
-    public void setId(Long value) {
+    public void setId(String value) {
         this.id = value;
     }
 

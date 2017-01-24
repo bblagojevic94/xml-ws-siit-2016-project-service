@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class SecurityUser implements UserDetails {
 
-    private Long id;
+    private String id;
     private String username;
     private String password;
     private String type;
@@ -38,7 +38,7 @@ public class SecurityUser implements UserDetails {
      * @param type        user type
      * @param authorities all granted user authorities
      */
-    public SecurityUser(Long id, String username, String password, String type, Collection<? extends GrantedAuthority> authorities) {
+    public SecurityUser(String id, String username, String password, String type, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -89,11 +89,11 @@ public class SecurityUser implements UserDetails {
         return this.enabled;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

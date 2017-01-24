@@ -44,7 +44,7 @@ public class UserRepositoryXML {
         return findById(document.getId());
     }
 
-    public boolean userExists(Long id) {
+    public boolean userExists(String id) {
         DocumentDescriptor descriptor = documentManager.exists(getDocumentId(id));
         if (descriptor != null) {
             return true;
@@ -52,7 +52,7 @@ public class UserRepositoryXML {
         return false;
     }
 
-    public AppUser findById(Long id) {
+    public AppUser findById(String id) {
         if (userExists(id)) {
             JAXBHandle contentHandle = RepositoryUtil.getObjectHandle(AppUser.class);
             JAXBHandle result = documentManager.read(getDocumentId(id), contentHandle);
@@ -88,7 +88,7 @@ public class UserRepositoryXML {
         return null;
     }
 
-    private String getDocumentId(Long id) {
+    private String getDocumentId(String id) {
         return String.format("/api_users/%s.xml", id);
     }
 

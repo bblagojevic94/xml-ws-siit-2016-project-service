@@ -34,7 +34,7 @@
         <xs:sequence>
             <xs:element ref="kor:Adresa"/>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:long"/>
+        <xs:attribute name="id" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="TPravno_lice">
         <xs:annotation>

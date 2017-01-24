@@ -22,7 +22,7 @@ public class UserServiceXML {
         return userRepositoryXML.save(user);
     }
 
-    public AppUser findById(Long id) { return userRepositoryXML.findById(id); }
+    public AppUser findById(String id) { return userRepositoryXML.findById(id); }
 
     public AppUser findOneByUsername(String username) { return userRepositoryXML.findOneByUsername(username);}
 }
