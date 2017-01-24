@@ -46,7 +46,7 @@ public class ConvenedState implements State {
 
         final Law result = lawServiceXML.create(law);
 
-        addAgenda(law.getId(), parliament);
+        addAgenda(law.getId(), parliament, "law");
 
         parliamentServiceXML.create(parliament);
 
@@ -69,7 +69,7 @@ public class ConvenedState implements State {
 
         Ref ref = new Ref();
         ref.setId(amendments.getId());
-        addAgenda(amendments.getId(), parliament);
+        addAgenda(amendments.getId(), parliament, "amendment");
 
         parliamentServiceXML.create(parliament);
 
@@ -87,7 +87,7 @@ public class ConvenedState implements State {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else if (Constants.LawsStates.SUGGESTED.equals(status)) {
             final Law result = lawServiceXML.updateLawStatus(id, status);
-            addAgenda(id, parliament);
+            addAgenda(id, parliament, "law");
 
             parliamentServiceXML.create(parliament);
 
@@ -107,7 +107,7 @@ public class ConvenedState implements State {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else if (Constants.AmendmentsStates.SUGGESTED.equals(status)) {
             final Amendments result = amendmentsServiceXML.updateAmendmentsStatus(id, status);
-            addAgenda(id, parliament);
+            addAgenda(id, parliament, "amendment");
 
             parliamentServiceXML.create(parliament);
 
