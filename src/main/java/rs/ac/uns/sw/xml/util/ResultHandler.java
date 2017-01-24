@@ -46,7 +46,6 @@ public class ResultHandler {
                     if (!EMPTY_STRING.equals(text)) {
                         preview.add(text);
                     }
-
                 }
             }
 
@@ -139,6 +138,6 @@ public class ResultHandler {
     }
 
     private String formatPath(final String path) {
-        return "/api" + (path.split("\"")[1]).split("\\.")[0];
+        return (path.split("\"")[1]).split("\\.")[0];
     }
 }
