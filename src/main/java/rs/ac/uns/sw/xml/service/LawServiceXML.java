@@ -59,4 +59,8 @@ public class LawServiceXML {
     public Law updateVotes(String id, VotingObject voting) {
         return repositoryXML.updateLawVotes(id, voting);
     }
+
+    public SearchResult searchByProposer(String userId) {
+        return repositoryXML.searchByProposer(userId);
+    }
 }

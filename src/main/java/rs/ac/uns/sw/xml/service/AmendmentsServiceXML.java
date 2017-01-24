@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.sw.xml.domain.Amendment;
 import rs.ac.uns.sw.xml.domain.Amendments;
 import rs.ac.uns.sw.xml.repository.AmendmentsRepositoryXML;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class AmendmentsServiceXML {
         return repositoryXML.save(amendments);
     }
 
-    public List<String> findByProposer(String proposer) {
+    public SearchResult findByProposer(String proposer) {
         return repositoryXML.findAmendmentsByProposer(proposer);
     }
 
@@ -42,5 +43,9 @@ public class AmendmentsServiceXML {
 
     public Amendments updateVoting(String id, VotingObject voting){
         return repositoryXML.updateAmendmentsVotes(id, voting);
+    }
+
+    public SearchResult findByLaw(String lawId) {
+        return repositoryXML.findByLaw(lawId);
     }
 }

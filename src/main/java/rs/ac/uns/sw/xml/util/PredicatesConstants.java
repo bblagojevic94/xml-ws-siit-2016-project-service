@@ -15,4 +15,5 @@ public final class PredicatesConstants {
     public static final String DATE_OF_VOTING = BASE_PREDICATE_URI + "datumIzglasavanja";
     public static final String AMENDMENTS_STATUS = BASE_PREDICATE_URI + "statusAmandmana";
     public static final String LAW_STATUS = BASE_PREDICATE_URI + "statusOdluke";
+    public static final String APPLIES_TO = BASE_PREDICATE_URI + "seOdnosiNa";
 }

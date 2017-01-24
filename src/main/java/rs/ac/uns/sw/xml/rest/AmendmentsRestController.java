@@ -19,6 +19,7 @@ import rs.ac.uns.sw.xml.util.Constants;
 import rs.ac.uns.sw.xml.util.HeaderUtil;
 import rs.ac.uns.sw.xml.util.RepositoryUtil;
 import rs.ac.uns.sw.xml.util.Transformers;
+import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
 import javax.xml.bind.JAXBException;
@@ -68,12 +69,12 @@ public class AmendmentsRestController {
     }
 
     @RequestMapping(
-            value = "/proposer/{proposerId}",
+            value = "/users/{proposerId}",
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<List<String>> searchAmendmentsByProposer(@PathVariable String proposerId) throws URISyntaxException {
-        final List<String> result = service.findByProposer("http://www.ftn.uns.ac.rs/rdf/examples/person/" + proposerId);
+    public ResponseEntity<SearchResult> searchAmendmentsByProposer(@PathVariable String proposerId) throws URISyntaxException {
+        final SearchResult result = service.findByProposer(proposerId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -160,5 +161,17 @@ public class AmendmentsRestController {
         }
 
         return (ResponseEntity<Law>) stateContext.getState().updateAmendmentVoting(id, votes);
+    }
+
+
+    @RequestMapping(
+            value = "/laws/{lawId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_XML_VALUE
+    )
+    public ResponseEntity<SearchResult> getAmendmentsByLaw(@PathVariable String lawId) throws URISyntaxException {
+        final SearchResult result = service.findByLaw(lawId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
