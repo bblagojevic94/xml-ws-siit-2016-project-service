@@ -143,6 +143,7 @@
     <xs:element name="ref">
         <xs:complexType mixed="true">
             <xs:attribute name="id" type="xs:anyURI"/>
+            <xs:attribute name="type" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

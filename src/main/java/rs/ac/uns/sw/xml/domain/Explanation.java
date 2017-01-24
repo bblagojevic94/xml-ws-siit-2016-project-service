@@ -239,8 +239,8 @@ public class Explanation {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link Ref }
          * {@link String }
+         * {@link Ref }
          * 
          * 
          */
@@ -301,8 +301,8 @@ public class Explanation {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link Ref }
          * {@link String }
+         * {@link Ref }
          * 
          * 
          */
@@ -363,8 +363,8 @@ public class Explanation {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link Ref }
          * {@link String }
+         * {@link Ref }
          * 
          * 
          */
@@ -425,8 +425,8 @@ public class Explanation {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link Ref }
          * {@link String }
+         * {@link Ref }
          * 
          * 
          */
