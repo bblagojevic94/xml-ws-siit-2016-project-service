@@ -24,9 +24,10 @@ public final class StatesUtil {
             return StateConstants.ParliamentStates.IN_PROGRESS_STATE;
     }
 
-    public static boolean addAgenda(String id, Parliament parliament) {
+    public static boolean addAgenda(String id, Parliament parliament, String type) {
         Ref ref = new Ref();
         ref.setId(id);
+        ref.setType(type);
 
         for (Ref r : parliament.getBody().getAkti().getRef()) {
             if (ref.getId().equals(r.getId())) {
