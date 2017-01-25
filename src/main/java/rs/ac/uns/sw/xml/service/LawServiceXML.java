@@ -44,14 +44,6 @@ public class LawServiceXML {
         return repositoryXML.findAllByQueryAndMetadata(query, searchWrapper);
     }
 
-    public JsonNode getMetadataJSON() {
-        return repositoryXML.getMetadataJSON();
-    }
-
-    public String getMetadataTriples() {
-        return repositoryXML.getMetadataTriples();
-    }
-
     public boolean lawExists(String id) {
         return repositoryXML.lawExists(id);
     }
@@ -62,5 +54,13 @@ public class LawServiceXML {
 
     public SearchResult searchByProposer(String userId) {
         return repositoryXML.searchByProposer(userId);
+    }
+
+    public String getMetadataJSON(String lawId){
+        return repositoryXML.getMetadataJSONByLaw(lawId);
+    }
+
+    public String getMetadataXML(String lawId){
+        return repositoryXML.getMetadataXMLByLaw(lawId);
     }
 }

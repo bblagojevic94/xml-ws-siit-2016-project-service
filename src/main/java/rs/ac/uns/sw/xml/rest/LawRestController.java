@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -115,30 +117,6 @@ public class LawRestController {
                 return new ResponseEntity<>(transformer.toHtml(RepositoryUtil.toXmlString(result, Law.class)), headers, HttpStatus.OK);
             }
 
-            default:
-                return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(
-            value = "/metadata/",
-            method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-
-    )
-    public ResponseEntity<?> getMetadata(@RequestHeader("Accept") String mediaType) {
-        HttpHeaders headers = new HttpHeaders();
-        switch (mediaType) {
-            case MediaType.APPLICATION_JSON_VALUE: {
-                JsonNode result = service.getMetadataJSON();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                return new ResponseEntity<>(result, headers, HttpStatus.OK);
-            }
-            case MediaType.APPLICATION_XML_VALUE: {
-                String result = service.getMetadataTriples();
-                headers.setContentType(MediaType.APPLICATION_XML);
-                return new ResponseEntity<>(result, headers, HttpStatus.OK);
-            }
             default:
                 return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
         }
@@ -253,5 +231,41 @@ public class LawRestController {
         return ResponseEntity
                 .ok()
                 .body(result);
+    }
+
+    @RequestMapping(
+            value = "/metadata/json/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<?> getMetadataJson(@PathVariable String id) {
+        HttpHeaders headers = new HttpHeaders();
+
+        String result = service.getMetadataJSON(id);
+
+        headers.set("Content-Disposition", "attachment; filename=law.json");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        Object r = new InputStreamResource(new ByteArrayInputStream(result.getBytes()));
+
+        return new ResponseEntity<>(r, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/metadata/xml/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<?> getMetadataXml(@PathVariable String id) {
+        HttpHeaders headers = new HttpHeaders();
+
+        String result = service.getMetadataXML(id);
+
+        headers.set("Content-Disposition", "attachment; filename=" + id + ".xml");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        Object r = new InputStreamResource(new ByteArrayInputStream(result.getBytes()));
+
+        return new ResponseEntity<>(r, headers, HttpStatus.OK);
     }
 }

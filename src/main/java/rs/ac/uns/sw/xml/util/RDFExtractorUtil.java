@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
+
 public class RDFExtractorUtil {
 
     private static final String XSLT_FILE = "./src/main/resources/xsl/grddl/grddl.xsl";
@@ -156,7 +158,18 @@ public class RDFExtractorUtil {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
-
     }
 
+    public static String fullQuerryForLaw(){
+        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "?law <" + VOTES_FOR + "> ?votes_for . " +
+                "?law <" + VOTES_AGAINST + "> ?votes_against . " +
+                "?law <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
+                "?law <" + DATE_OF_PROPOSAL + "> ?proposal_date . " +
+                "?law <" + DATE_OF_VOTING + "> ?voting_date . " +
+                "?law <" + LAW_STATUS + "> ?status . " +
+                "?law <" + SUGGESTED + ">  ?proposer . }" ;
+        return queryDefinition;
+    }
 }
