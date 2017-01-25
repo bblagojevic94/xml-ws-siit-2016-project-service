@@ -312,16 +312,24 @@ public class LawRepositoryXML {
         final String lawVotesForXPath = "propis:propis/propis:head/propis:glasova_za";
         final String lawVotesAgainstXPath = "propis:propis/propis:head/propis:glasova_protiv";
         final String lawVotesNeutralXPath = "propis:propis/propis:head/propis:glasova_suzdrzani";
+        final String lawStatusXPath = "propis:propis/propis:head/propis:status";
+
+        String status = Constants.LawsStates.REJECTED;
+        if (voting.getVotesFor() > voting.getVotesAgainst()){
+            status = Constants.LawsStates.ACCEPTED;
+        }
 
         patchBuilder.replaceFragment(lawVotesForXPath, voting.getVotesFor());
         patchBuilder.replaceFragment(lawVotesAgainstXPath, voting.getVotesAgainst());
         patchBuilder.replaceFragment(lawVotesNeutralXPath, voting.getVotesNeutral());
+        patchBuilder.replaceFragment(lawStatusXPath, status);
 
         DocumentPatchHandle patchHandle = patchBuilder.build();
         documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
 
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
         RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.LAWS, voting, sparqlQueryManager);
+        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.LAWS, LAW_STATUS, status, sparqlQueryManager);
 
         return findLawById(id);
     }
