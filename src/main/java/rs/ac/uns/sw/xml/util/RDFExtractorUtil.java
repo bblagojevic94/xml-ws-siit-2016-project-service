@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.Constants.Resources.LAWS;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 
 public class RDFExtractorUtil {
@@ -160,8 +161,8 @@ public class RDFExtractorUtil {
         }
     }
 
-    public static String fullQuerryForLaw(){
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+    public static String fullQueryForLaw() {
+        return "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
                 "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
                 "?law <" + VOTES_FOR + "> ?votes_for . " +
                 "?law <" + VOTES_AGAINST + "> ?votes_against . " +
@@ -169,7 +170,19 @@ public class RDFExtractorUtil {
                 "?law <" + DATE_OF_PROPOSAL + "> ?proposal_date . " +
                 "?law <" + DATE_OF_VOTING + "> ?voting_date . " +
                 "?law <" + LAW_STATUS + "> ?status . " +
-                "?law <" + SUGGESTED + ">  ?proposer . }" ;
-        return queryDefinition;
+                "?law <" + SUGGESTED + ">  ?proposer . }";
+    }
+
+    public static String fullQueryForAmendments() {
+        return "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
+                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { " +
+                "?am <" + VOTES_FOR + "> ?votes_for . " +
+                "?am <" + VOTES_AGAINST + "> ?votes_against . " +
+                "?am <" + VOTES_NEUTRAL + "> ?votes_neutral . " +
+                "?am <" + DATE_OF_PROPOSAL + "> ?proposal_date . " +
+                "?am <" + DATE_OF_VOTING + "> ?voting_date . " +
+                "?am <" + AMENDMENTS_STATUS + "> ?status . " +
+                "?am <" + SUGGESTED + "> ?proposer . " +
+                "?am <" + APPLIES_TO + "> ?law . }";
     }
 }

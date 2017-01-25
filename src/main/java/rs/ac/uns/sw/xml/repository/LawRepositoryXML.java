@@ -41,7 +41,7 @@ import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.*;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
-import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.fullQuerryForLaw;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.fullQueryForLaw;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.transformTriples;
 
 @Component
@@ -335,7 +335,7 @@ public class LawRepositoryXML {
     public String getMetadataJSONByLaw(String id) {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
-        String queryDefinition = fullQuerryForLaw();
+        String queryDefinition = fullQueryForLaw();
 
         SPARQLQueryDefinition query = sparqlQueryManager
                 .newQueryDefinition(queryDefinition)
@@ -361,7 +361,7 @@ public class LawRepositoryXML {
     public String getMetadataXMLByLaw(String id) {
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
 
-        String queryDefinition = fullQuerryForLaw();
+        String queryDefinition = fullQueryForLaw();
 
         SPARQLQueryDefinition query = sparqlQueryManager
                 .newQueryDefinition(queryDefinition)

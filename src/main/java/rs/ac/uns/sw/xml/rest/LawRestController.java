@@ -243,7 +243,7 @@ public class LawRestController {
 
         String result = service.getMetadataJSON(id);
 
-        headers.set("Content-Disposition", "attachment; filename=law.json");
+        headers.set("Content-Disposition", "attachment; filename=" + id + ".json");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
         Object r = new InputStreamResource(new ByteArrayInputStream(result.getBytes()));

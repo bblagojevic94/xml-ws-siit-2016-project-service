@@ -2,6 +2,7 @@ package rs.ac.uns.sw.xml.rest;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -173,5 +175,41 @@ public class AmendmentsRestController {
         final SearchResult result = service.findByLaw(lawId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/metadata/json/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<?> getMetadataJson(@PathVariable String id) {
+        HttpHeaders headers = new HttpHeaders();
+
+        String result = service.getMetadataJSON(id);
+
+        Object r = new InputStreamResource(new ByteArrayInputStream(result.getBytes()));
+
+        headers.set("Content-Disposition", "attachment; filename=" + id + ".json");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        return new ResponseEntity<>(r, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/metadata/xml/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<?> getMetadataXml(@PathVariable String id) {
+        HttpHeaders headers = new HttpHeaders();
+
+        String result = service.getMetadataXML(id);
+
+        Object r = new InputStreamResource(new ByteArrayInputStream(result.getBytes()));
+
+        headers.set("Content-Disposition", "attachment; filename=" + id + ".xml");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        return new ResponseEntity<>(r, headers, HttpStatus.OK);
     }
 }
