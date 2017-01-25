@@ -78,7 +78,6 @@ public class UserRestController {
     @RequestMapping(
             value    = "/{id}",
             method   = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public ResponseEntity<AppUser> getUserById(@PathVariable String id, UriComponentsBuilder builder) throws URISyntaxException {
