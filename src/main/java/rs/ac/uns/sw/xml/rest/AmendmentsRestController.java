@@ -155,12 +155,12 @@ public class AmendmentsRestController {
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<Law> updateVotes(@PathVariable("id") String id, @RequestBody VotingObject votes) {
+    public ResponseEntity<Amendments> updateVotes(@PathVariable("id") String id, @RequestBody VotingObject votes) {
         if (!service.amendmentsExists(id)) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        return (ResponseEntity<Law>) stateContext.getState().updateAmendmentVoting(id, votes);
+        return (ResponseEntity<Amendments>) stateContext.getState().updateAmendmentVoting(id, votes);
     }
 
 

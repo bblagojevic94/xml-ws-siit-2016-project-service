@@ -149,19 +149,29 @@ public class AmendmentsRepositoryXML {
         final String amenVotesForXPath = "aman:amandmani/aman:head/aman:glasova_za";
         final String amenVotesAgainstXPath = "aman:amandmani/aman:head/aman:glasova_protiv";
         final String amenVotesNeutralXPath = "aman:amandmani/aman:head/aman:glasova_suzdrzani";
+        final String amendmentsStatusXPath = "aman:amandmani/aman:head/aman:status";
+
+        String status = Constants.AmendmentsStates.REJECTED;
+        if (voting.getVotesFor() > voting.getVotesAgainst()){
+            status = Constants.AmendmentsStates.ACCEPTED;
+        }
 
         patchBuilder.replaceFragment(amenVotesForXPath, voting.getVotesFor());
         patchBuilder.replaceFragment(amenVotesAgainstXPath, voting.getVotesAgainst());
         patchBuilder.replaceFragment(amenVotesNeutralXPath, voting.getVotesNeutral());
+        patchBuilder.replaceFragment(amendmentsStatusXPath, status);
 
         DocumentPatchHandle patchHandle = patchBuilder.build();
         documentManager.patch(makeCollectionPath(id, "amendments"), patchHandle);
 
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
         RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.AMENDMENTS, voting, sparqlQueryManager);
+        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.AMENDMENTS, AMENDMENTS_STATUS, status, sparqlQueryManager);
 
         return findAmendmentById(id);
     }
+
+
 
     public SearchResult findByLaw(String lawId){
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
