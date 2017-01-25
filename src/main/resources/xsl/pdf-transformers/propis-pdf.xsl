@@ -88,29 +88,39 @@
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="11pt" text-align="justify">
-            <xsl:value-of select="current()"/>
-            <xsl:if test="elem:tacka">
-                <xsl:for-each select="elem:tacka">
-                    <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
-                    <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.2in">
-                        <xsl:value-of select="position()"/>. <xsl:value-of select="current()"/>
-                        <!-- All subcaluses -->
-                        <xsl:if test="elem:podtacka">
-                            <xsl:for-each select="elem:podtacka">
-                                <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
-                                    (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
-                                </fo:block>
-                                <xsl:apply-templates select="elem:alineja"/>
-                            </xsl:for-each>
-                        </xsl:if>
+            <xsl:apply-templates/>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template match="elem:stav//*">
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates />
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="elem:stav//elem:tacka">
+        <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
+        <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.2in">
+            <xsl:value-of select="count(preceding-sibling::elem:tacka) + 1"/>. <xsl:value-of select="current()"/>
+            <!-- All subcaluses -->
+            <xsl:if test="elem:podtacka">
+                <xsl:for-each select="elem:podtacka">
+                    <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.4in">
+                        (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
                     </fo:block>
                     <xsl:apply-templates select="elem:alineja"/>
                 </xsl:for-each>
             </xsl:if>
         </fo:block>
+        <xsl:apply-templates select="elem:alineja"/>
     </xsl:template>
 
-    <xsl:template match="elem:alineja">
+    <xsl:template match="text()">
+        <xsl:value-of select="current()"/>
+    </xsl:template>
+
+    <xsl:template match="elem:stav//elem:tacka//elem:alineja">
         <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.6in">
             - <xsl:value-of select="current()"/>
         </fo:block>
