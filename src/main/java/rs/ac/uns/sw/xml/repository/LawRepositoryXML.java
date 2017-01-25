@@ -1,6 +1,9 @@
 package rs.ac.uns.sw.xml.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.DocumentPatchBuilder;
@@ -32,11 +35,13 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.util.Constants.Resources.LAWS;
 import static rs.ac.uns.sw.xml.util.Constants.Resources.USERS;
 import static rs.ac.uns.sw.xml.util.DateUtil.DATE_FORMAT;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.*;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.fullQueryForLaw;
 import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.transformTriples;
 
 @Component
@@ -146,7 +151,7 @@ public class LawRepositoryXML {
         documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
 
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.LAWS, LAW_STATUS, status, sparqlQueryManager);
+        RDFUpdateUtil.updateRDFStringObject(id, LAWS, LAW_STATUS, status, sparqlQueryManager);
 
         return findLawById(id);
     }
@@ -204,39 +209,6 @@ public class LawRepositoryXML {
         }
 
         return handler.toSearchResult(result, properties);
-    }
-
-    public JsonNode getMetadataJSON() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        JacksonHandle resultsHandle = new JacksonHandle();
-        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
-
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-        return resultsHandle.get().path(RESULTS).path(BINDINGS);
-    }
-
-    public String getMetadataTriples() {
-        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-
-        String queryDefinition = "PREFIX xs: <http://www.w3.org/2001/XMLSchema#> " +
-                "SELECT * FROM <" + PARLIAMENT_NAMED_GRAPH_URI + "> WHERE { ?s ?p ?o}";
-
-        SPARQLQueryDefinition query = sparqlQueryManager
-                .newQueryDefinition(queryDefinition);
-
-        DOMHandle resultsHandle = new DOMHandle();
-        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-
-        StringWriter writer = new StringWriter();
-        transformTriples(resultsHandle.get(), writer);
-        return writer.getBuffer().toString();
     }
 
     private String getDocumentId(String value) {
@@ -328,8 +300,8 @@ public class LawRepositoryXML {
         documentManager.patch(makeCollectionPath(id, "laws"), patchHandle);
 
         SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
-        RDFUpdateUtil.updateVotingTriples(id, Constants.Resources.LAWS, voting, sparqlQueryManager);
-        RDFUpdateUtil.updateRDFStringObject(id, Constants.Resources.LAWS, LAW_STATUS, status, sparqlQueryManager);
+        RDFUpdateUtil.updateVotingTriples(id, LAWS, voting, sparqlQueryManager);
+        RDFUpdateUtil.updateRDFStringObject(id, LAWS, LAW_STATUS, status, sparqlQueryManager);
 
         return findLawById(id);
     }
@@ -358,5 +330,48 @@ public class LawRepositoryXML {
 
         ResultHandler handler = new ResultHandler(Law.class, documentManager);
         return handler.toSearchResult(node);
+    }
+
+    public String getMetadataJSONByLaw(String id) {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = fullQueryForLaw();
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition)
+                .withBinding("law", LAWS + id);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        String prettyJson = "";
+        try {
+            prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultsHandle.get().path(RESULTS).path(BINDINGS).get(0));
+        } catch (JsonProcessingException e) {
+            System.out.println("Error in parsing law metadata - JSON");
+        }
+
+        return prettyJson;
+    }
+
+    public String getMetadataXMLByLaw(String id) {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = fullQueryForLaw();
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition)
+                .withBinding("law", LAWS + id);
+
+        DOMHandle resultsHandle = new DOMHandle();
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        StringWriter writer = new StringWriter();
+        transformTriples(resultsHandle.get(), writer);
+        return writer.getBuffer().toString();
     }
 }

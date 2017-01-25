@@ -48,4 +48,13 @@ public class AmendmentsServiceXML {
     public SearchResult findByLaw(String lawId) {
         return repositoryXML.findByLaw(lawId);
     }
+
+    public String getMetadataJSON(String amendmentsId){
+        return repositoryXML.getMetadataJSONByAmendment(amendmentsId);
+    }
+
+    public String getMetadataXML(String amendmentsId){
+        return repositoryXML.getMetadataXMLByAmendment(amendmentsId);
+    }
+
 }

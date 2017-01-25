@@ -1,10 +1,14 @@
 package rs.ac.uns.sw.xml.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentDescriptor;
 import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.XMLDocumentManager;
+import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
@@ -24,15 +28,18 @@ import rs.ac.uns.sw.xml.util.*;
 import rs.ac.uns.sw.xml.util.search_wrapper.SearchResult;
 import rs.ac.uns.sw.xml.util.voting_wrapper.VotingObject;
 
+import java.io.StringWriter;
 import java.util.List;
 
+import static rs.ac.uns.sw.xml.repository.LawRepositoryXML.BINDINGS;
+import static rs.ac.uns.sw.xml.repository.LawRepositoryXML.RESULTS;
+import static rs.ac.uns.sw.xml.util.Constants.Resources.AMENDMENTS;
 import static rs.ac.uns.sw.xml.util.Constants.Resources.LAWS;
 import static rs.ac.uns.sw.xml.util.Constants.Resources.USERS;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.createNamespaces;
 import static rs.ac.uns.sw.xml.util.PartialUpdateUtil.makeCollectionPath;
 import static rs.ac.uns.sw.xml.util.PredicatesConstants.*;
-import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.PARLIAMENT_NAMED_GRAPH_URI;
-import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.handleResults;
+import static rs.ac.uns.sw.xml.util.RDFExtractorUtil.*;
 
 @Component
 public class AmendmentsRepositoryXML {
@@ -198,5 +205,48 @@ public class AmendmentsRepositoryXML {
 
         ResultHandler handler = new ResultHandler(Amendments.class, documentManager);
         return handler.toSearchResult(node);
+    }
+
+    public String getMetadataJSONByAmendment(String id) {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = fullQueryForAmendments();
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition)
+                .withBinding("am", AMENDMENTS + id);
+
+        JacksonHandle resultsHandle = new JacksonHandle();
+        resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        String prettyJson = "";
+        try {
+            prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultsHandle.get().path(RESULTS).path(BINDINGS).get(0));
+        } catch (JsonProcessingException e) {
+            System.out.println("Error in parsing amendment metadata - JSON");
+        }
+
+        return prettyJson;
+    }
+
+    public String getMetadataXMLByAmendment(String id) {
+        SPARQLQueryManager sparqlQueryManager = databaseClient.newSPARQLQueryManager();
+
+        String queryDefinition = fullQueryForAmendments();
+
+        SPARQLQueryDefinition query = sparqlQueryManager
+                .newQueryDefinition(queryDefinition)
+                .withBinding("am", AMENDMENTS + id);
+
+        DOMHandle resultsHandle = new DOMHandle();
+        resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+
+        StringWriter writer = new StringWriter();
+        transformTriples(resultsHandle.get(), writer);
+        return writer.getBuffer().toString();
     }
 }
