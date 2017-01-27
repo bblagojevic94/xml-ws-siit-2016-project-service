@@ -118,7 +118,10 @@ public class LawRestController {
             }
 
             default:
-                return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+                transformer.setName(NAME);
+
+                headers.setContentType(MediaType.TEXT_HTML);
+                return new ResponseEntity<>(transformer.toHtml(RepositoryUtil.toXmlString(result, Law.class)), headers, HttpStatus.OK);
         }
     }
 
@@ -194,7 +197,7 @@ public class LawRestController {
     }
 
     @RequestMapping(
-            value = "/{id}/{status}",
+            value = "/{id}/status/{status}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_XML_VALUE
     )
