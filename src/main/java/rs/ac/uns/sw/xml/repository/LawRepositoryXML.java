@@ -93,7 +93,7 @@ public class LawRepositoryXML {
             final String type = amendment.getHead().getRjesenje();
             final String ref = amendment.getHead().getPredmet().getRef().getId();
             //final String xpath = makeXPath(ref);
-            final String xpath = "*[@id'" + ref + "']";
+            final String xpath = "*[@id='" + ref + "']";
 
             // Remove last two characters of XPath ('//')
             final String xpathTrimmed = xpath.substring(0, xpath.length() - 2);
