@@ -3,7 +3,9 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:aman="http://www.parlament.gov.rs/schema/amandman"
-                xmlns:elem="http://www.parlament.gov.rs/schema/elementi">
+                xmlns:elem="http://www.parlament.gov.rs/schema/elementi"
+                xmlns:str="http://exslt.org/strings"
+                extension-element-prefixes="str">
 
     <!-- Reading data from head -->
     <xsl:template match="aman:amandmani/aman:head">
@@ -38,6 +40,36 @@
     <xsl:template match="aman:amandmani/aman:body/aman:amandman/aman:head">
         <fo:block font-family="Arial" text-align="center" font-size="12pt" margin-top="16px">
             AMANDMAN ZA DOPUNU ZAKONA
+        </fo:block>
+        <xsl:copy>
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- Skip 'rjesenje' -->
+    <xsl:template match="aman:amandman/aman:head/aman:rjesenje">
+
+    </xsl:template>
+
+    <xsl:template match="aman:amandman/aman:head/aman:predmet/elem:ref">
+        <xsl:variable name="refFull" select="current()/@id"/>
+        <xsl:variable name="refSplitted" select="str:tokenize(current()/@id, '_')"/>
+
+        <xsl:variable name="amendmentRef" select="concat($refSplitted[1], '_', $refSplitted[2], '_', $refSplitted[3], '#', $refFull)"/>
+
+        <xsl:variable name="lawLink" select="concat('http://localhost:9000/api/laws/', $amendmentRef)"/>
+
+        <fo:block>
+            Amandman se odnosi na element koji možete vidjeti
+            <fo:basic-link
+                    external-destination="url('http://www.paulmccartney.com')"
+                    color="blue" text-decoration="underline">
+                Paul McCartney
+            </fo:basic-link>
+            <a>
+                <xsl:attribute name="href">http://localhost:9000/api/laws/<xsl:value-of select="$amendmentRef"/></xsl:attribute>
+                ovdje</a>.
         </fo:block>
     </xsl:template>
 
@@ -117,7 +149,7 @@
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="10pt" text-align="justify">
-            <xsl:value-of select="current()"/>
+            <xsl:value-of select="text()"/>
         </fo:block>
         <fo:block>
             <xsl:apply-templates select="elem:tacka"/>
@@ -128,7 +160,7 @@
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="11pt" text-align="justify" start-indent="0.2in">
-            <xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
+            <xsl:value-of select="position()"/>) <xsl:value-of select="text()"/>
         </fo:block>
         <fo:block>
             <xsl:apply-templates/>
@@ -139,7 +171,7 @@
         <!-- New Line -->
         <fo:block><xsl:value-of select="'&#x2028;'"/></fo:block>
         <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.4in">
-            (<xsl:value-of select="position()"/>) <xsl:value-of select="current()"/>
+            (<xsl:value-of select="position()"/>) <xsl:value-of select="text()"/>
         </fo:block>
         <fo:block>
             <xsl:apply-templates/>
@@ -148,7 +180,7 @@
 
     <xsl:template match="elem:alineja">
         <fo:block font-family="Arial" font-size="10pt" text-align="justify" start-indent="0.6in">
-            - <xsl:value-of select="current()"/>
+            - <xsl:value-of select="text()"/>
         </fo:block>
     </xsl:template>
 
