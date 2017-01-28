@@ -52,14 +52,5 @@ public class VotingObject {
     public void setVotesNeutral(Integer votesNeutral) {
         this.votesNeutral = votesNeutral;
     }
-
-    @Override
-    public String toString() {
-        return "VotingObject{" +
-                "votesFor=" + votesFor +
-                ", votesAgainst=" + votesAgainst +
-                ", votesNeutral=" + votesNeutral +
-                '}';
-    }
 }
 
